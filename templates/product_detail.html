@@ -1,0 +1,630 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+body{
+    background: linear-gradient(to right, #f8fafc, #eef2ff);
+}
+
+.product-page{
+    width: min(1240px, 94%);
+    margin: 28px auto 50px;
+}
+
+.breadcrumb{
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+    line-height: 1.7;
+    word-break: break-word;
+}
+
+.breadcrumb a{
+    color: #7c3aed;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.product-section{
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 34px;
+    align-items: flex-start;
+}
+
+/* LEFT */
+.product-left{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.main-img{
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    padding: 28px;
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+    text-align: center;
+    border: 1px solid #edf2f7;
+}
+
+.main-img img{
+    width: 100%;
+    height: 470px;
+    object-fit: contain;
+    transition: 0.4s ease;
+    display: block;
+}
+
+.main-img img:hover{
+    transform: scale(1.04);
+}
+
+.thumbs{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.thumb-item{
+    background: white;
+    padding: 6px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+.thumb-item:hover{
+    transform: translateY(-2px);
+    border-color: #7c3aed;
+}
+
+.thumb-item img{
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+/* INFO CARDS */
+.info-card{
+    background: white;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #edf2f7;
+}
+
+.info-card h4{
+    margin: 0 0 14px;
+    font-size: 18px;
+    color: #111827;
+}
+
+.info-card p{
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.8;
+    font-size: 15px;
+    word-break: break-word;
+}
+
+.highlights{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.highlight-box{
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+}
+
+.highlight-box h5{
+    margin: 0 0 6px;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.highlight-box p{
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* RIGHT */
+.product-right{
+    position: sticky;
+    top: 100px;
+}
+
+.buy-box{
+    background: white;
+    padding: 28px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    border: 1px solid #edf2f7;
+}
+
+.badge-row{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.top-badge{
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sale-badge{
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.stock-badge{
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.title{
+    font-size: 30px;
+    line-height: 1.3;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+    word-break: break-word;
+}
+
+.rating-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.stars{
+    color: #f59e0b;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.rating-text{
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.price-wrap{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 18px 0 8px;
+}
+
+.price{
+    font-size: 30px;
+    font-weight: 800;
+    color: #16a34a;
+}
+
+.old-price{
+    font-size: 17px;
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
+.discount-text{
+    font-size: 13px;
+    color: #ef4444;
+    font-weight: 700;
+    background: #fef2f2;
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.stock-status{
+    margin: 2px 0 12px;
+}
+
+.stock-status .in-stock{
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stock-status .out-stock{
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.stock-status .low-stock{
+    color: #f59e0b;
+    font-weight: 700;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.short-desc{
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 10px;
+}
+
+.feature-list{
+    margin: 18px 0 8px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.feature-list li{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.btn-main{
+    width: 100%;
+    padding: 15px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 15px;
+}
+
+.cart-btn{
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    color: white;
+    box-shadow: 0 10px 22px rgba(124,58,237,0.20);
+}
+
+.buy-btn{
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    box-shadow: 0 10px 22px rgba(34,197,94,0.18);
+}
+
+.soldout-btn{
+    background: #d1d5db;
+    color: #111827;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-main:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.14);
+}
+
+.soldout-btn:hover{
+    transform: none;
+    box-shadow: none;
+}
+
+.assurance-box{
+    margin-top: 18px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.assurance-box h5{
+    margin: 0 0 8px;
+    font-size: 15px;
+    color: #111827;
+}
+
+.assurance-box p{
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px){
+    .product-section{
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .product-right{
+        position: static;
+    }
+}
+
+@media (max-width: 980px){
+    .main-img img{
+        height: 360px;
+    }
+}
+
+@media (max-width: 768px){
+    .product-page{
+        width: 94%;
+        margin: 18px auto 40px;
+    }
+
+    .buy-box{
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .main-img{
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .main-img img{
+        height: 300px;
+    }
+
+    .title{
+        font-size: 26px;
+    }
+
+    .price{
+        font-size: 26px;
+    }
+
+    .highlights{
+        grid-template-columns: 1fr;
+    }
+
+    .info-card{
+        padding: 18px;
+    }
+}
+
+@media (max-width: 640px){
+    .breadcrumb{
+        font-size: 13px;
+    }
+
+    .title{
+        font-size: 24px;
+    }
+
+    .price{
+        font-size: 24px;
+    }
+
+    .main-img{
+        padding: 18px;
+    }
+
+    .main-img img{
+        height: 260px;
+    }
+
+    .thumbs{
+        gap: 10px;
+    }
+
+    .thumb-item img{
+        width: 68px;
+        height: 68px;
+    }
+
+    .buy-box{
+        padding: 18px;
+    }
+
+    .feature-list li{
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px){
+    .product-page{
+        width: 96%;
+    }
+
+    .main-img{
+        padding: 14px;
+    }
+
+    .main-img img{
+        height: 220px;
+    }
+
+    .thumb-item img{
+        width: 58px;
+        height: 58px;
+    }
+
+    .title{
+        font-size: 22px;
+    }
+
+    .price{
+        font-size: 22px;
+    }
+
+    .top-badge{
+        font-size: 11px;
+        padding: 7px 10px;
+    }
+
+    .btn-main{
+        padding: 13px;
+        font-size: 14px;
+    }
+
+    .assurance-box{
+        padding: 14px;
+    }
+}
+</style>
+
+<div class="product-page">
+
+    <div class="breadcrumb">
+        <a href="{% url 'home' %}">Home</a> /
+        <a href="{% url 'shop' %}">Product Listing Page</a> /
+        <span>{{ product.name }}</span>
+    </div>
+
+    <div class="product-section">
+
+        <!-- LEFT -->
+        <div class="product-left">
+
+            <div class="main-img">
+                <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+
+            <div class="thumbs">
+                <div class="thumb-item" onclick="changeImage(this)">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                </div>
+
+                {% for img in images %}
+                    <div class="thumb-item" onclick="changeImage(this)">
+                        <img src="{{ img.image.url }}" alt="{{ product.name }}">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="info-card">
+                <h4>Description</h4>
+                <p>{{ product.description }}</p>
+            </div>
+
+            <div class="info-card">
+                <h4>Product Highlights</h4>
+                <div class="highlights">
+                    <div class="highlight-box">
+                        <h5>Premium Quality</h5>
+                        <p>Carefully selected product with a modern finish and reliable performance.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h5>Fast Delivery</h5>
+                        <p>Quick shipping support available for a smooth shopping experience.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h5>Secure Purchase</h5>
+                        <p>Shop safely with trusted checkout and order tracking support.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h5>Customer Friendly</h5>
+                        <p>Easy ordering process with clean UI and smooth product browsing.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="product-right">
+            <div class="buy-box">
+
+                <div class="badge-row">
+                    <span class="top-badge sale-badge">🔥 Trending Product</span>
+                    <span class="top-badge stock-badge">Limited Stock</span>
+                </div>
+
+                <div class="title">{{ product.name }}</div>
+
+                <div class="rating-row">
+                    <div class="stars">★★★★☆</div>
+                    <div class="rating-text">4.0 / 5 Customer Rating</div>
+                </div>
+
+                <div class="price-wrap">
+                    <div class="price">₹{{ product.price }}</div>
+
+                    {% if product.original_price %}
+                        <div class="old-price">₹{{ product.original_price }}</div>
+                    {% endif %}
+
+                    {% if product.discount_percentage %}
+                        <div class="discount-text">{{ product.discount_percentage }}% OFF</div>
+                    {% endif %}
+                </div>
+
+                <div class="stock-status">
+                    {% if product.stock > 0 %}
+                        <span class="in-stock">In Stock ({{ product.stock }} available)</span>
+                        {% if product.stock <= 5 %}
+                            <span class="low-stock">⚠ Low stock</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="out-stock">Out of Stock</span>
+                    {% endif %}
+                </div>
+
+                <div class="short-desc">
+                    A premium product designed for a smooth and modern shopping experience.
+                </div>
+
+                <ul class="feature-list">
+                    <li>✅ Secure checkout available</li>
+                    <li>🚚 Fast shipping support</li>
+                    <li>💯 Genuine quality product</li>
+                    <li>🔁 Easy order process</li>
+                </ul>
+
+                {% if product.stock > 0 %}
+                    <a href="{% url 'add_to_cart' product.id %}">
+                        <button class="btn-main cart-btn">🛒 Add to Cart</button>
+                    </a>
+
+                    <a href="{% url 'buy_now' product.id %}">
+                        <button class="btn-main buy-btn">⚡ Buy Now</button>
+                    </a>
+                {% else %}
+                    <button class="btn-main soldout-btn" disabled>❌ Out of Stock</button>
+                {% endif %}
+
+                <div class="assurance-box">
+                    <h5>Why buy this product?</h5>
+                    <p>
+                        This product is presented with a premium interface, easy order actions, and a clean browsing experience.
+                        It is ideal for building a modern ecommerce presentation.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function changeImage(el){
+    const img = el.querySelector("img");
+    document.getElementById("mainImage").src = img.src;
+}
+</script>
+
+{% endblock %}

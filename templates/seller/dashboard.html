@@ -1,0 +1,854 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.seller-page{
+    width: 92%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.seller-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.seller-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.seller-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.seller-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.seller-title{
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0 0 8px;
+}
+
+.seller-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+}
+
+.seller-layout{
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+}
+
+.seller-sidebar{
+    background: white;
+    border-radius: 22px;
+    padding: 20px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.seller-sidebar h3{
+    margin-bottom: 16px;
+    color: #111827;
+    font-size: 20px;
+}
+
+.sidebar-links{
+    display: grid;
+    gap: 10px;
+}
+
+.sidebar-links a{
+    display: block;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    color: #111827;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.sidebar-links a:hover{
+    background: #ede9fe;
+    color: #6d28d9;
+    border-color: #ddd6fe;
+}
+
+.seller-main{
+    display: grid;
+    gap: 24px;
+}
+
+.stats-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.stat-card{
+    background: linear-gradient(145deg, #ffffff, #fbfbfd);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+}
+
+.stat-card h4{
+    margin: 0 0 10px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.stat-card p{
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.analytics-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.analytics-card{
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+}
+
+.analytics-card h4{
+    margin: 0 0 8px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.analytics-card p{
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.card-section{
+    background: white;
+    border-radius: 22px;
+    padding: 22px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+
+.section-title{
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.quick-actions{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.quick-box{
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 18px;
+    padding: 18px;
+    transition: 0.25s ease;
+}
+
+.quick-box:hover{
+    transform: translateY(-3px);
+    border-color: #ddd6fe;
+    background: #faf5ff;
+}
+
+.quick-box h4{
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 16px;
+}
+
+.quick-box p{
+    margin: 0 0 12px;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.quick-box a{
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.chart-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.chart-card{
+    padding-bottom: 10px;
+}
+
+.table-wrap{
+    overflow-x: auto;
+}
+
+.orders-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th{
+    text-align: left;
+    padding: 14px 12px;
+    font-size: 13px;
+    color: #6b7280;
+    border-bottom: 1px solid #eef2f7;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.orders-table td{
+    padding: 14px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #111827;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.orders-table tr:last-child td{
+    border-bottom: none;
+}
+
+.status-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.status-pending{ background: #fef3c7; color: #b45309; }
+.status-confirmed{ background: #ede9fe; color: #6d28d9; }
+.status-packed{ background: #e0f2fe; color: #0369a1; }
+.status-shipped{ background: #dbeafe; color: #1d4ed8; }
+.status-out_for_delivery{ background: #ffedd5; color: #c2410c; }
+.status-delivered{ background: #dcfce7; color: #15803d; }
+.status-cancelled{ background: #fee2e2; color: #dc2626; }
+
+.action-link{
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.products-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.product-mini{
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 18px;
+    padding: 14px;
+}
+
+.product-mini img{
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #edf2f7;
+}
+
+.product-mini h4{
+    margin: 0 0 8px;
+    font-size: 15px;
+    color: #111827;
+    line-height: 1.45;
+}
+
+.product-mini p{
+    margin: 0 0 6px;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.top-products-list,
+.customer-list,
+.location-list,
+.category-list{
+    display: grid;
+    gap: 12px;
+}
+
+.top-product-item,
+.customer-item,
+.location-item,
+.category-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 14px;
+    padding: 12px 14px;
+    gap: 12px;
+}
+
+.top-product-name,
+.customer-name,
+.location-name,
+.category-name{
+    font-weight: 700;
+    color: #111827;
+    font-size: 14px;
+}
+
+.top-product-meta,
+.customer-meta,
+.location-meta,
+.category-meta{
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.empty-text{
+    color: #6b7280;
+    font-size: 14px;
+}
+
+@media (max-width: 1200px){
+    .stats-grid{
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .analytics-grid{
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1100px){
+    .products-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px){
+    .seller-layout{
+        grid-template-columns: 1fr;
+    }
+
+    .seller-sidebar{
+        position: static;
+    }
+
+    .quick-actions{
+        grid-template-columns: 1fr;
+    }
+
+    .chart-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px){
+    .stats-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .analytics-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .seller-title{
+        font-size: 28px;
+    }
+
+    .products-grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px){
+    .stats-grid{
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="seller-page">
+
+    <div class="seller-hero">
+        <div class="seller-hero-content">
+            <h1 class="seller-title">📊 Seller Analytics Dashboard</h1>
+            <p class="seller-subtitle">Track products, categories, customers, locations, sales, and order performance from one place.</p>
+        </div>
+    </div>
+
+    <div class="seller-layout">
+
+        <div class="seller-sidebar">
+            <h3>Seller Panel</h3>
+            <div class="sidebar-links">
+                <a href="{% url 'seller_dashboard' %}">📊 Dashboard</a>
+                <a href="{% url 'seller_products' %}">🛍 My Products</a>
+                <a href="{% url 'seller_add_product' %}">➕ Add Product</a>
+                <a href="{% url 'seller_orders' %}">📦 Orders</a>
+            </div>
+        </div>
+
+        <div class="seller-main">
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Total Products</h4>
+                    <p>{{ total_products }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Total Orders</h4>
+                    <p>{{ total_orders }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Pending Orders</h4>
+                    <p>{{ pending_orders }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Delivered Orders</h4>
+                    <p>{{ delivered_orders }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <h4>Total Sales</h4>
+                    <p>₹{{ total_sales }}</p>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h4>Pending Revenue</h4>
+                    <p>₹{{ pending_revenue }}</p>
+                </div>
+
+                <div class="analytics-card">
+                    <h4>Delivered Revenue</h4>
+                    <p>₹{{ delivered_revenue }}</p>
+                </div>
+
+                <div class="analytics-card">
+                    <h4>Cancelled Orders</h4>
+                    <p>{{ cancelled_orders }}</p>
+                </div>
+
+                <div class="analytics-card">
+                    <h4>Unique Customers</h4>
+                    <p>{{ unique_customers }}</p>
+                </div>
+
+                <div class="analytics-card">
+                    <h4>Low / Out Stock</h4>
+                    <p>{{ low_stock_products }} / {{ out_of_stock_products }}</p>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="quick-actions">
+                    <div class="quick-box">
+                        <h4>Add New Product</h4>
+                        <p>Create and upload a new product for your store.</p>
+                        <a href="{% url 'seller_add_product' %}">Add Product</a>
+                    </div>
+
+                    <div class="quick-box">
+                        <h4>My Products</h4>
+                        <p>View, edit and manage the products you have already uploaded.</p>
+                        <a href="{% url 'seller_products' %}">Open Products</a>
+                    </div>
+
+                    <div class="quick-box">
+                        <h4>Orders</h4>
+                        <p>Manage all customer orders, update status and tracking.</p>
+                        <a href="{% url 'seller_orders' %}">Open Orders</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="card-section chart-card">
+                    <h2 class="section-title">Order Status Overview</h2>
+                    <canvas id="statusChart" height="120"></canvas>
+                </div>
+
+                <div class="card-section chart-card">
+                    <h2 class="section-title">Monthly Sales</h2>
+                    <canvas id="salesChart" height="120"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="card-section chart-card">
+                    <h2 class="section-title">Products by Category</h2>
+                    <canvas id="categoryChart" height="120"></canvas>
+                </div>
+
+                <div class="card-section chart-card">
+                    <h2 class="section-title">Top Product Sales Chart</h2>
+                    <canvas id="topProductsChart" height="120"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="card-section">
+                    <h2 class="section-title">Top Selling Products</h2>
+                    {% if top_products_data %}
+                        <div class="top-products-list">
+                            {% for item in top_products_data %}
+                                <div class="top-product-item">
+                                    <div class="top-product-name">{{ item.name }}</div>
+                                    <div class="top-product-meta">
+                                        Sold: {{ item.qty }} | ₹{{ item.revenue }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-text">No top-selling product data yet.</p>
+                    {% endif %}
+                </div>
+
+                <div class="card-section">
+                    <h2 class="section-title">Category Summary</h2>
+                    {% if category_data %}
+                        <div class="category-list">
+                            {% for item in category_data %}
+                                <div class="category-item">
+                                    <div class="category-name">{{ item.name }}</div>
+                                    <div class="category-meta">{{ item.count }} product(s)</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-text">No category data found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="card-section">
+                    <h2 class="section-title">Top Buyers</h2>
+                    {% if top_buyers %}
+                        <div class="customer-list">
+                            {% for customer in top_buyers %}
+                                <div class="customer-item">
+                                    <div>
+                                        <div class="customer-name">{{ customer.name }}</div>
+                                        <div class="customer-meta">{{ customer.email }} | {{ customer.city }}, {{ customer.state }}</div>
+                                    </div>
+                                    <div class="customer-meta">
+                                        Orders: {{ customer.order_count }}<br>
+                                        Items: {{ customer.items }}<br>
+                                        Spent: ₹{{ customer.spent }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-text">No customer data yet.</p>
+                    {% endif %}
+                </div>
+
+                <div class="card-section">
+                    <h2 class="section-title">Customer Locations</h2>
+                    {% if city_stats or state_stats %}
+                        <div class="location-list">
+                            {% for city, count in city_stats %}
+                                <div class="location-item">
+                                    <div class="location-name">{{ city }}</div>
+                                    <div class="location-meta">{{ count }} order(s)</div>
+                                </div>
+                            {% endfor %}
+                            {% for state, count in state_stats %}
+                                <div class="location-item">
+                                    <div class="location-name">{{ state }}</div>
+                                    <div class="location-meta">{{ count }} order(s)</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-text">No location data yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-section">
+                <h2 class="section-title">Recent Orders</h2>
+                <div class="table-wrap">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_order_items %}
+                            <tr>
+                                <td>#{{ item.order.id }}</td>
+                                <td>{{ item.order.name }}</td>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ item.order.status }}">
+                                        {{ item.order.status|title }}
+                                    </span>
+                                </td>
+                                <td>₹{{ item.product.price }}</td>
+                                <td>
+                                    <a href="{% url 'seller_order_detail' item.order.id %}" class="action-link">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="empty-text">No recent orders found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <h2 class="section-title">Recent Products</h2>
+                <div class="products-grid">
+                    {% for product in recent_products %}
+                    <div class="product-mini">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% endif %}
+
+                        <h4>{{ product.name }}</h4>
+                        <p>Price: ₹{{ product.price }}</p>
+
+                        <p>
+                            Stock:
+                            {% if product.stock > 0 %}
+                                <span style="color:#059669; font-weight:700;">
+                                    {{ product.stock }} available
+                                </span>
+                                {% if product.stock <= 5 %}
+                                    <span style="color:#f59e0b; font-size:12px; font-weight:700;">⚠ Low stock</span>
+                                {% endif %}
+                            {% else %}
+                                <span style="color:#dc2626; font-weight:700;">
+                                    Out of stock
+                                </span>
+                            {% endif %}
+                        </p>
+
+                        <p>
+                            Category:
+                            {% if product.category %}
+                                {{ product.category.name }}
+                            {% else %}
+                                No Category
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% empty %}
+                    <p class="empty-text">No products found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const statusLabels = {{ status_labels|default:"[]"|safe }};
+const statusCounts = {{ status_counts|default:"[]"|safe }};
+const monthlyLabels = {{ monthly_labels|default:"[]"|safe }};
+const monthlySales = {{ monthly_sales|default:"[]"|safe }};
+const topProductLabels = {{ top_product_labels|default:"[]"|safe }};
+const topProductQty = {{ top_product_qty|default:"[]"|safe }};
+const categoryLabels = {{ category_labels|default:"[]"|safe }};
+const categoryCounts = {{ category_counts|default:"[]"|safe }};
+
+const statusCtx = document.getElementById('statusChart');
+if (statusCtx) {
+    new Chart(statusCtx, {
+        type: 'bar',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: 'Orders',
+                data: statusCounts,
+                borderWidth: 1,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+}
+
+const salesCtx = document.getElementById('salesChart');
+if (salesCtx) {
+    new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Sales',
+                data: monthlySales,
+                fill: false,
+                tension: 0.3,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+}
+
+const topProductsCtx = document.getElementById('topProductsChart');
+if (topProductsCtx) {
+    new Chart(topProductsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: topProductLabels,
+            datasets: [{
+                data: topProductQty,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+
+const categoryCtx = document.getElementById('categoryChart');
+if (categoryCtx) {
+    new Chart(categoryCtx, {
+        type: 'pie',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryCounts,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+</script>
+
+{% endblock %}

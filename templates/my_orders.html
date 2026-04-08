@@ -1,0 +1,961 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.orders-page{
+    width: 92%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.orders-page .orders-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.orders-page .orders-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.orders-page .orders-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.orders-page .orders-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.orders-page .orders-title{
+    font-size: 34px;
+    font-weight: 900;
+    margin: 0 0 8px;
+    letter-spacing: 0.4px;
+}
+
+.orders-page .orders-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+}
+
+.orders-page .orders-tabs{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 4px 0 24px;
+    position: sticky;
+    top: 90px;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    padding: 12px 14px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.orders-page .tab-btn{
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #374151;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.orders-page .tab-btn:hover{
+    border-color: #c4b5fd;
+    color: #6d28d9;
+}
+
+.orders-page .tab-btn.active{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 10px 24px rgba(124,58,237,0.22);
+}
+
+.orders-page .tab-content{
+    display: none;
+}
+
+.orders-page .tab-content.active{
+    display: block;
+}
+
+.orders-page .section-heading{
+    font-size: 22px;
+    font-weight: 900;
+    color: #111827;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.orders-page .orders-wrapper{
+    display: grid;
+    gap: 22px;
+}
+
+.orders-page .order-card{
+    background: linear-gradient(145deg, #ffffff, #fbfbfd);
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+}
+
+.orders-page .order-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.08);
+    border-color: #d8b4fe;
+}
+
+.orders-page .order-top{
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.orders-page .order-main{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.orders-page .order-id{
+    font-size: 22px;
+    font-weight: 900;
+    color: #111827;
+}
+
+.orders-page .order-meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.orders-page .order-meta-item{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.orders-page .order-total{
+    font-size: 24px;
+    font-weight: 900;
+    color: #7c3aed;
+}
+
+.orders-page .order-payment{
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.orders-page .order-actions{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.orders-page .status-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 130px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+}
+
+.orders-page .status-pending{
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+.orders-page .status-confirmed{
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+}
+.orders-page .status-packed{
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+.orders-page .status-shipped{
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+.orders-page .status-out{
+    background: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+.orders-page .status-delivered{
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+.orders-page .status-cancelled{
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.orders-page .btn{
+    text-decoration: none;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orders-page .btn-view{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.22);
+}
+
+.orders-page .btn-view:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(124,58,237,0.30);
+}
+
+.orders-page .btn-cancel{
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+}
+
+.orders-page .btn-cancel:hover{
+    transform: translateY(-2px);
+    background: #ffe4e6;
+}
+
+.orders-page .products-preview{
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.orders-page .product-row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 12px 14px;
+    transition: all 0.25s ease;
+}
+
+.orders-page .product-row:hover{
+    background: #f3f4f6;
+    border-color: #d8b4fe;
+}
+
+.orders-page .product-image{
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orders-page .product-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.orders-page .product-fallback{
+    color: #7c3aed;
+    font-size: 26px;
+}
+
+.orders-page .product-info{
+    flex: 1;
+    min-width: 0;
+}
+
+.orders-page .product-name{
+    color: #111827;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.orders-page .product-meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.orders-page .product-subtotal{
+    color: #111827;
+    font-size: 15px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.orders-page .tracking-wrap{
+    margin-top: 2px;
+    padding-top: 6px;
+}
+
+.orders-page .tracking-title{
+    font-size: 14px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.orders-page .tracking-bar{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.orders-page .track-step{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.orders-page .track-node{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.orders-page .track-label{
+    font-size: 12px;
+    font-weight: 800;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+.orders-page .track-line{
+    width: 34px;
+    height: 3px;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.orders-page .track-done .track-node{
+    background: #dcfce7;
+    border-color: #bbf7d0;
+    color: #16a34a;
+}
+
+.orders-page .track-done .track-label{
+    color: #15803d;
+}
+
+.orders-page .track-line.done{
+    background: #4ade80;
+}
+
+.orders-page .track-active .track-node{
+    background: #ede9fe;
+    border-color: #ddd6fe;
+    color: #7c3aed;
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.08);
+}
+
+.orders-page .track-active .track-label{
+    color: #6d28d9;
+}
+
+.orders-page .cancelled-note{
+    margin-top: 10px;
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.orders-page .empty-box{
+    text-align: center;
+    padding: 80px 20px;
+    border-radius: 28px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.orders-page .empty-box h2{
+    color: #111827;
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.orders-page .empty-box p{
+    color: #6b7280;
+    margin: 0 0 24px;
+    font-size: 15px;
+}
+
+.orders-page .btn-shop{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 800;
+    display: inline-block;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.22);
+}
+
+.orders-page .btn-shop:hover{
+    color: white;
+}
+
+.orders-page .icon-svg{
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.orders-page .section-empty{
+    background: #ffffff;
+    border: 1px dashed #d1d5db;
+    border-radius: 18px;
+    padding: 18px;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+@media (max-width: 900px){
+    .orders-page .order-top{
+        flex-direction: column;
+    }
+
+    .orders-page .order-actions{
+        justify-content: flex-start;
+    }
+
+    .orders-page .tracking-bar{
+        gap: 10px 6px;
+    }
+
+    .orders-page .track-line{
+        width: 20px;
+    }
+}
+
+@media (max-width: 640px){
+    .orders-page .orders-title{
+        font-size: 28px;
+    }
+
+    .orders-page .order-card{
+        padding: 18px;
+    }
+
+    .orders-page .product-row{
+        align-items: flex-start;
+    }
+
+    .orders-page .product-subtotal{
+        margin-top: 6px;
+    }
+
+    .orders-page .tracking-bar{
+        align-items: flex-start;
+    }
+
+    .orders-page .track-step{
+        gap: 6px;
+    }
+
+    .orders-page .track-label{
+        font-size: 11px;
+    }
+}
+</style>
+
+<div class="orders-page">
+    <div class="orders-hero">
+        <div class="orders-hero-content">
+            <h1 class="orders-title">🛍️ My Orders</h1>
+            <p class="orders-subtitle">Track your purchases, check delivery status, and manage your orders easily.</p>
+        </div>
+    </div>
+
+    {% if orders %}
+
+        <div class="orders-tabs">
+            <button class="tab-btn active" onclick="showTab('pending-section', this)">Pending / Processing Orders</button>
+            <button class="tab-btn" onclick="showTab('delivered-section', this)">Delivered Orders</button>
+            <button class="tab-btn" onclick="showTab('cancelled-section', this)">Cancelled Orders</button>
+        </div>
+
+        <!-- PENDING / PROCESSING -->
+        <div id="pending-section" class="tab-content active">
+            <h2 class="section-heading">⏳ Pending & Processing Orders</h2>
+            <div class="orders-wrapper">
+                {% for order in orders %}
+                    {% if order.status == "pending" or order.status == "confirmed" or order.status == "packed" or order.status == "shipped" or order.status == "out_for_delivery" %}
+                        <div class="order-card">
+
+                            <div class="order-top">
+                                <div class="order-main">
+                                    <div class="order-id">Order #{{ order.id }}</div>
+
+                                    <div class="order-meta">
+                                        <span class="order-meta-item">📅 {{ order.created_at }}</span>
+                                        {% if order.tracking_id %}
+                                            <span class="order-meta-item">🚚 {{ order.tracking_id }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="order-total">₹{{ order.total }}</div>
+
+                                    <div class="order-payment">
+                                        {% if order.payment_method == "cod" %}
+                                            🚚 Cash on Delivery
+                                        {% elif order.payment_method == "razorpay" %}
+                                            💳 Online Payment
+                                        {% else %}
+                                            {{ order.payment_method }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    {% if order.status == "pending" %}
+                                        <span class="status-badge status-pending">Pending</span>
+                                    {% elif order.status == "confirmed" %}
+                                        <span class="status-badge status-confirmed">Confirmed</span>
+                                    {% elif order.status == "packed" %}
+                                        <span class="status-badge status-packed">Packed</span>
+                                    {% elif order.status == "shipped" %}
+                                        <span class="status-badge status-shipped">Shipped</span>
+                                    {% elif order.status == "out_for_delivery" %}
+                                        <span class="status-badge status-out">Out for Delivery</span>
+                                    {% endif %}
+
+                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-view">View Details</a>
+
+                                    {% if order.status == "pending" or order.status == "confirmed" %}
+                                        <a href="{% url 'cancel_order' order.id %}" class="btn btn-cancel">Cancel Order</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="products-preview">
+                                {% for item in order.orderitem_set.all %}
+                                    <div class="product-row">
+                                        <div class="product-image">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                            {% else %}
+                                                <div class="product-fallback">🛍️</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="product-info">
+                                            <div class="product-name">{{ item.product.name }}</div>
+                                            <div class="product-meta">
+                                                <span>Qty: {{ item.quantity }}</span>
+                                                <span>Price: ₹{{ item.product.price }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="product-subtotal">
+                                            ₹{{ item.product.price|floatformat:0 }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="tracking-wrap">
+                                <div class="tracking-title">Order Tracking</div>
+
+                                <div class="tracking-bar">
+                                    <div class="track-step {% if order.status == 'pending' %}track-active{% elif order.status == 'confirmed' or order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M12 8v4l2.5 2.5"></path>
+                                                <circle cx="12" cy="12" r="8"></circle>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Pending</div>
+                                    </div>
+
+                                    <div class="track-line {% if order.status == 'confirmed' or order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                                    <div class="track-step {% if order.status == 'confirmed' %}track-active{% elif order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M20 6L9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Confirmed</div>
+                                    </div>
+
+                                    <div class="track-line {% if order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                                    <div class="track-step {% if order.status == 'packed' %}track-active{% elif order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M21 8l-9-5-9 5 9 5 9-5z"></path>
+                                                <path d="M3 8v8l9 5 9-5V8"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Packed</div>
+                                    </div>
+
+                                    <div class="track-line {% if order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                                    <div class="track-step {% if order.status == 'shipped' %}track-active{% elif order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M3 7h13v10H3z"></path>
+                                                <path d="M16 10h3l2 2v5h-5z"></path>
+                                                <circle cx="7.5" cy="17.5" r="1.5"></circle>
+                                                <circle cx="17.5" cy="17.5" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Shipped</div>
+                                    </div>
+
+                                    <div class="track-line {% if order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                                    <div class="track-step {% if order.status == 'out_for_delivery' %}track-active{% elif order.status == 'delivered' %}track-done{% endif %}">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M14 3h7v7"></path>
+                                                <path d="M10 14L21 3"></path>
+                                                <path d="M21 14v7h-7"></path>
+                                                <path d="M3 10L14 21"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Out for Delivery</div>
+                                    </div>
+
+                                    <div class="track-line"></div>
+
+                                    <div class="track-step">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M20 6L9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Delivered</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- DELIVERED -->
+        <div id="delivered-section" class="tab-content">
+            <h2 class="section-heading">✅ Delivered Orders</h2>
+            <div class="orders-wrapper">
+                {% for order in orders %}
+                    {% if order.status == "delivered" %}
+                        <div class="order-card">
+
+                            <div class="order-top">
+                                <div class="order-main">
+                                    <div class="order-id">Order #{{ order.id }}</div>
+
+                                    <div class="order-meta">
+                                        <span class="order-meta-item">📅 {{ order.created_at }}</span>
+                                        {% if order.tracking_id %}
+                                            <span class="order-meta-item">🚚 {{ order.tracking_id }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="order-total">₹{{ order.total }}</div>
+
+                                    <div class="order-payment">
+                                        {% if order.payment_method == "cod" %}
+                                            🚚 Cash on Delivery
+                                        {% elif order.payment_method == "razorpay" %}
+                                            💳 Online Payment
+                                        {% else %}
+                                            {{ order.payment_method }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <span class="status-badge status-delivered">Delivered</span>
+                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-view">View Details</a>
+                                </div>
+                            </div>
+
+                            <div class="products-preview">
+                                {% for item in order.orderitem_set.all %}
+                                    <div class="product-row">
+                                        <div class="product-image">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                            {% else %}
+                                                <div class="product-fallback">🛍️</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="product-info">
+                                            <div class="product-name">{{ item.product.name }}</div>
+                                            <div class="product-meta">
+                                                <span>Qty: {{ item.quantity }}</span>
+                                                <span>Price: ₹{{ item.product.price }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="product-subtotal">
+                                            ₹{{ item.product.price|floatformat:0 }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="tracking-wrap">
+                                <div class="tracking-title">Order Tracking</div>
+
+                                <div class="tracking-bar">
+                                    <div class="track-step track-done">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M12 8v4l2.5 2.5"></path>
+                                                <circle cx="12" cy="12" r="8"></circle>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Pending</div>
+                                    </div>
+
+                                    <div class="track-line done"></div>
+
+                                    <div class="track-step track-done">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M20 6L9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Confirmed</div>
+                                    </div>
+
+                                    <div class="track-line done"></div>
+
+                                    <div class="track-step track-done">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M21 8l-9-5-9 5 9 5 9-5z"></path>
+                                                <path d="M3 8v8l9 5 9-5V8"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Packed</div>
+                                    </div>
+
+                                    <div class="track-line done"></div>
+
+                                    <div class="track-step track-done">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M3 7h13v10H3z"></path>
+                                                <path d="M16 10h3l2 2v5h-5z"></path>
+                                                <circle cx="7.5" cy="17.5" r="1.5"></circle>
+                                                <circle cx="17.5" cy="17.5" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Shipped</div>
+                                    </div>
+
+                                    <div class="track-line done"></div>
+
+                                    <div class="track-step track-done">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M14 3h7v7"></path>
+                                                <path d="M10 14L21 3"></path>
+                                                <path d="M21 14v7h-7"></path>
+                                                <path d="M3 10L14 21"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Out for Delivery</div>
+                                    </div>
+
+                                    <div class="track-line done"></div>
+
+                                    <div class="track-step track-active">
+                                        <div class="track-node">
+                                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                                <path d="M20 6L9 17l-5-5"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="track-label">Delivered</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- CANCELLED -->
+        <div id="cancelled-section" class="tab-content">
+            <h2 class="section-heading">❌ Cancelled Orders</h2>
+            <div class="orders-wrapper">
+                {% for order in orders %}
+                    {% if order.status == "cancelled" %}
+                        <div class="order-card">
+
+                            <div class="order-top">
+                                <div class="order-main">
+                                    <div class="order-id">Order #{{ order.id }}</div>
+
+                                    <div class="order-meta">
+                                        <span class="order-meta-item">📅 {{ order.created_at }}</span>
+                                        {% if order.tracking_id %}
+                                            <span class="order-meta-item">🚚 {{ order.tracking_id }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="order-total">₹{{ order.total }}</div>
+
+                                    <div class="order-payment">
+                                        {% if order.payment_method == "cod" %}
+                                            🚚 Cash on Delivery
+                                        {% elif order.payment_method == "razorpay" %}
+                                            💳 Online Payment
+                                        {% else %}
+                                            {{ order.payment_method }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <span class="status-badge status-cancelled">Cancelled</span>
+                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-view">View Details</a>
+                                </div>
+                            </div>
+
+                            <div class="products-preview">
+                                {% for item in order.orderitem_set.all %}
+                                    <div class="product-row">
+                                        <div class="product-image">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                            {% else %}
+                                                <div class="product-fallback">🛍️</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="product-info">
+                                            <div class="product-name">{{ item.product.name }}</div>
+                                            <div class="product-meta">
+                                                <span>Qty: {{ item.quantity }}</span>
+                                                <span>Price: ₹{{ item.product.price }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="product-subtotal">
+                                            ₹{{ item.product.price|floatformat:0 }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="cancelled-note">❌ This order has been cancelled.</div>
+
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    {% else %}
+        <div class="empty-box">
+            <h2>No orders yet 😢</h2>
+            <p>You have not placed any order yet. Start shopping to see your orders here.</p>
+            <a href="{% url 'shop' %}" class="btn-shop">Continue Shopping</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function showTab(tabId, btn){
+    const tabs = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tab-btn');
+
+    tabs.forEach(tab => tab.classList.remove('active'));
+    buttons.forEach(button => button.classList.remove('active'));
+
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+</script>
+
+{% endblock %}

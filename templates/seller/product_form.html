@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.seller-form-page{
+    width: 92%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.seller-form-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+}
+
+.seller-form-title{
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.form-card{
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+}
+
+.form-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full{
+    grid-column: 1 / -1;
+}
+
+.form-group label{
+    font-weight: 700;
+    color: #111827;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+}
+
+.form-group textarea{
+    min-height: 140px;
+    resize: vertical;
+}
+
+.checkbox-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-row input{
+    width: auto;
+    padding: 0;
+}
+
+.current-image-box img{
+    width: 150px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.extra-images{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.existing-image-card{
+    position: relative;
+    width: 92px;
+    height: 92px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.existing-image-card img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.delete-existing-btn{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #dc2626;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.16);
+    transition: 0.2s ease;
+}
+
+.delete-existing-btn:hover{
+    background: #b91c1c;
+    color: white;
+    transform: scale(1.05);
+}
+
+.save-btn{
+    background: #7c3aed;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-btn{
+    display: inline-block;
+    margin-right: 10px;
+    text-decoration: none;
+    background: #f3f4f6;
+    color: #111827;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.error-box{
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+.field-error{
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.help-text{
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.upload-box{
+    border: 2px dashed #c4b5fd;
+    background: linear-gradient(180deg, #faf7ff, #f8fafc);
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    position: relative;
+}
+
+.upload-box:hover{
+    border-color: #8b5cf6;
+    background: linear-gradient(180deg, #f6f0ff, #f8fafc);
+}
+
+.upload-box.dragover{
+    border-color: #7c3aed;
+    background: #f5f3ff;
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.08);
+}
+
+.upload-box-icon{
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.upload-box-title{
+    font-size: 16px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.upload-box-text{
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.hidden-file-input{
+    display: none;
+}
+
+.preview-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.preview-card{
+    position: relative;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.preview-card img{
+    width: 100%;
+    height: 95px;
+    object-fit: cover;
+    display: block;
+}
+
+.preview-name{
+    padding: 8px;
+    font-size: 11px;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.remove-preview{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(17,24,39,0.9);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.selected-count{
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #6d28d9;
+}
+
+@media (max-width: 768px){
+    .form-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .seller-form-title{
+        font-size: 28px;
+    }
+}
+</style>
+
+<div class="seller-form-page">
+
+    <div class="seller-form-hero">
+        <h1 class="seller-form-title">{{ page_title }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error-box">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label>Product Name</label>
+                    {{ form.name }}
+                    {% for error in form.name.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    {{ form.category }}
+                    {% for error in form.category.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label>Stock</label>
+                    {{ form.stock }}
+                    {% for error in form.stock.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label>Selling Price</label>
+                    {{ form.price }}
+                    {% for error in form.price.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label>Original Price</label>
+                    {{ form.original_price }}
+                    {% for error in form.original_price.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label>Main Image</label>
+                    {{ form.image }}
+                    {% for error in form.image.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group full">
+                    <label>Extra Images</label>
+
+                    <div id="uploadBox" class="upload-box">
+                        <div class="upload-box-icon">🖼️</div>
+                        <div class="upload-box-title">Upload extra product images</div>
+                        <div class="upload-box-text">
+                            Click here or drag and drop images.<br>
+                            You can add many images at once.
+                        </div>
+                    </div>
+
+                    <input
+                        type="file"
+                        name="extra_images"
+                        id="extraImagesInput"
+                        class="hidden-file-input"
+                        accept="image/*"
+                        multiple
+                    >
+
+                    <div id="selectedCount" class="selected-count" style="display:none;"></div>
+                    <div id="previewGrid" class="preview-grid"></div>
+                </div>
+
+                <div class="form-group full">
+                    <div class="checkbox-row">
+                        {{ form.is_active }}
+                        <label>Product Active</label>
+                    </div>
+                    {% for error in form.is_active.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group full">
+                    <label>Description</label>
+                    {{ form.description }}
+                    {% for error in form.description.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {% if form.instance.image %}
+                <div class="form-group full">
+                    <label>Current Main Image</label>
+                    <div class="current-image-box">
+                        <img src="{{ form.instance.image.url }}" alt="{{ form.instance.name }}">
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if extra_images %}
+                <div class="form-group full">
+                    <label>Existing Extra Images</label>
+                    <div class="extra-images">
+                        {% for img in extra_images %}
+                            <div class="existing-image-card">
+                                <img src="{{ img.image.url }}" alt="">
+                                <a
+                                    href="{% url 'delete_extra_image' img.id %}"
+                                    class="delete-existing-btn"
+                                    onclick="return confirm('Delete this image?')"
+                                    title="Delete image"
+                                >
+                                    ✕
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <br>
+
+            <a href="{% url 'seller_products' %}" class="back-btn">Back</a>
+            <button type="submit" class="save-btn">{{ button_text }}</button>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+const uploadBox = document.getElementById("uploadBox");
+const extraImagesInput = document.getElementById("extraImagesInput");
+const previewGrid = document.getElementById("previewGrid");
+const selectedCount = document.getElementById("selectedCount");
+
+let selectedFiles = [];
+
+function syncFileInput() {
+    const dt = new DataTransfer();
+    selectedFiles.forEach(file => dt.items.add(file));
+    extraImagesInput.files = dt.files;
+}
+
+function renderPreviews() {
+    previewGrid.innerHTML = "";
+
+    if (selectedFiles.length === 0) {
+        selectedCount.style.display = "none";
+        selectedCount.textContent = "";
+        return;
+    }
+
+    selectedCount.style.display = "block";
+    selectedCount.textContent = selectedFiles.length + " image(s) selected";
+
+    selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const card = document.createElement("div");
+            card.className = "preview-card";
+
+            card.innerHTML = `
+                <button type="button" class="remove-preview" data-index="${index}">✕</button>
+                <img src="${e.target.result}" alt="">
+                <div class="preview-name">${file.name}</div>
+            `;
+
+            previewGrid.appendChild(card);
+
+            const removeBtn = card.querySelector(".remove-preview");
+            removeBtn.addEventListener("click", function() {
+                const removeIndex = parseInt(this.getAttribute("data-index"));
+                selectedFiles.splice(removeIndex, 1);
+                syncFileInput();
+                renderPreviews();
+            });
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+function addFiles(files) {
+    const incoming = Array.from(files).filter(file => file.type.startsWith("image/"));
+    selectedFiles = [...selectedFiles, ...incoming];
+    syncFileInput();
+    renderPreviews();
+}
+
+uploadBox.addEventListener("click", () => extraImagesInput.click());
+
+extraImagesInput.addEventListener("change", function() {
+    addFiles(this.files);
+});
+
+uploadBox.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    uploadBox.classList.add("dragover");
+});
+
+uploadBox.addEventListener("dragleave", function() {
+    uploadBox.classList.remove("dragover");
+});
+
+uploadBox.addEventListener("drop", function(e) {
+    e.preventDefault();
+    uploadBox.classList.remove("dragover");
+    addFiles(e.dataTransfer.files);
+});
+</script>
+
+{% endblock %}

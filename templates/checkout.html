@@ -1,0 +1,612 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.checkout-page{
+    width: 92%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.checkout-page .checkout-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.checkout-page .checkout-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.checkout-page .checkout-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.checkout-page .checkout-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.checkout-page .checkout-title{
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0 0 8px;
+}
+
+.checkout-page .checkout-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+}
+
+.checkout-page .checkout-layout{
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.checkout-page .checkout-card{
+    background: white;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    border: 1px solid #eef2f7;
+    min-width: 0;
+}
+
+.checkout-page .sticky-summary{
+    position: sticky;
+    top: 100px;
+}
+
+.checkout-page .section-title{
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 18px;
+    color: #111827;
+}
+
+.checkout-page .saved-note{
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    background: #f5f3ff;
+    color: #6d28d9;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.checkout-page .form-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.checkout-page .form-group{
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout-page .form-group.full{
+    grid-column: 1 / -1;
+}
+
+.checkout-page .form-group label{
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #6b7280;
+}
+
+.checkout-page .form-group input,
+.checkout-page .form-group textarea,
+.checkout-page .form-group select{
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
+    background: #f8fafc;
+    transition: 0.25s ease;
+}
+
+.checkout-page .form-group textarea{
+    min-height: 100px;
+    resize: vertical;
+}
+
+.checkout-page .form-group input:focus,
+.checkout-page .form-group textarea:focus,
+.checkout-page .form-group select:focus{
+    border-color: #8b5cf6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.10);
+}
+
+.checkout-page .place-order-btn{
+    width: 100%;
+    margin-top: 18px;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+}
+
+.checkout-page .place-order-btn:hover{
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    transform: translateY(-1px);
+}
+
+.checkout-page .payment-note{
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+.checkout-page .coupon-box{
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.checkout-page .coupon-box input{
+    flex: 1;
+    min-width: 200px;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    outline: none;
+}
+
+.checkout-page .coupon-box input:focus{
+    border-color: #8b5cf6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.10);
+}
+
+.checkout-page .coupon-box button{
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.checkout-page .coupon-box button:hover{
+    background: #000;
+}
+
+.checkout-page .message{
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6d28d9;
+}
+
+.checkout-page .order-items{
+    display: grid;
+    gap: 14px;
+}
+
+.checkout-page .order-item{
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+}
+
+.checkout-page .order-item img{
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: white;
+    border-radius: 12px;
+    padding: 6px;
+    border: 1px solid #edf2f7;
+}
+
+.checkout-page .item-info{
+    flex: 1;
+    min-width: 0;
+}
+
+.checkout-page .item-info h4{
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: #111827;
+    line-height: 1.45;
+}
+
+.checkout-page .item-info p{
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.checkout-page .item-price{
+    font-weight: 800;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.checkout-page .summary-box{
+    margin-top: 20px;
+    border-top: 1px solid #eef2f7;
+    padding-top: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+.checkout-page .summary-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #374151;
+    font-size: 15px;
+}
+
+.checkout-page .summary-row.total{
+    font-size: 20px;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 6px;
+}
+
+.checkout-page .discount{
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.checkout-page .summary-note{
+    margin-top: 14px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+@media (max-width: 900px){
+    .checkout-page .checkout-layout{
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-page .sticky-summary{
+        position: static;
+        top: auto;
+    }
+
+    .checkout-page .form-grid{
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="checkout-page">
+
+    <div class="checkout-hero">
+        <div class="checkout-hero-content">
+            <h1 class="checkout-title">🧾 Checkout</h1>
+            <p class="checkout-subtitle">Enter delivery details, review your items, and complete your order securely.</p>
+        </div>
+    </div>
+
+    <div class="checkout-layout">
+
+        <!-- LEFT -->
+        <div class="checkout-card">
+            <h2 class="section-title">Delivery Information</h2>
+
+            {% if profile.address or profile.phone %}
+            <div class="saved-note">
+                Saved profile address auto-filled. You can edit it before placing the order.
+            </div>
+            {% endif %}
+
+            <form method="POST" id="checkout-form">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" value="{{ user.username }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" value="{{ profile.phone|default:'' }}" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ user.email }}" required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Full Address</label>
+                        <textarea name="address" required>{{ profile.address|default:'' }}</textarea>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Landmark</label>
+                        <input type="text" name="landmark" value="{{ profile.landmark|default:'' }}" placeholder="Near school, temple, mall, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="city" value="{{ profile.city|default:'' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="state" value="{{ profile.state|default:'' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <input type="text" name="pincode" value="{{ profile.pincode|default:'' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select name="payment_method" id="payment_method" required>
+                            <option value="cod">Cash on Delivery</option>
+                            <option value="razorpay">Pay Online (Razorpay / UPI / Card)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="place-order-btn" id="place-order-btn">
+                    Place Order
+                </button>
+
+                <div class="payment-note">
+                    Select <strong>Pay Online</strong> to open Razorpay popup.
+                </div>
+            </form>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="checkout-card sticky-summary">
+            <h2 class="section-title">Order Summary</h2>
+
+            <div class="order-items">
+                {% for product in products %}
+                <div class="order-item">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+
+                    <div class="item-info">
+                        <h4>{{ product.name }}</h4>
+                        <p>Quantity: {{ product.qty }}</p>
+                        <p>Price: ₹{{ product.price }}</p>
+                    </div>
+
+                    <div class="item-price">
+                        ₹{{ product.subtotal }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <form method="POST" action="{% url 'apply_coupon' %}" class="coupon-box">
+                {% csrf_token %}
+                <input type="text" name="code" placeholder="Enter coupon code">
+                <button type="submit">Apply</button>
+            </form>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{{ total }}</span>
+                </div>
+
+                {% if request.session.coupon %}
+                <div class="summary-row discount">
+                    <span>Coupon ({{ request.session.coupon.code }})</span>
+                    <span>- ₹{{ request.session.coupon.discount }}</span>
+                </div>
+                {% endif %}
+
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <span>Free</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Final Total</span>
+                    <span>₹{{ final_total }}</span>
+                </div>
+            </div>
+
+            <p class="summary-note">
+                Secure checkout and smooth payment experience for your selected products.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<form id="payment-success-form" method="POST" action="{% url 'payment_success' %}" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="name" id="success_name">
+    <input type="hidden" name="phone" id="success_phone">
+    <input type="hidden" name="email" id="success_email">
+    <input type="hidden" name="address" id="success_address">
+    <input type="hidden" name="landmark" id="success_landmark">
+    <input type="hidden" name="city" id="success_city">
+    <input type="hidden" name="state" id="success_state">
+    <input type="hidden" name="pincode" id="success_pincode">
+
+    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+</form>
+
+<script>
+document.getElementById("checkout-form").addEventListener("submit", function(e) {
+    const paymentMethod = document.getElementById("payment_method").value;
+
+    if (paymentMethod === "razorpay") {
+        e.preventDefault();
+        openRazorpay();
+    }
+});
+
+function openRazorpay() {
+    const checkoutForm = document.getElementById("checkout-form");
+
+    const name = checkoutForm.querySelector('input[name="name"]').value;
+    const phone = checkoutForm.querySelector('input[name="phone"]').value;
+    const email = checkoutForm.querySelector('input[name="email"]').value;
+    const address = checkoutForm.querySelector('textarea[name="address"]').value;
+    const landmark = checkoutForm.querySelector('input[name="landmark"]').value;
+    const city = checkoutForm.querySelector('input[name="city"]').value;
+    const state = checkoutForm.querySelector('input[name="state"]').value;
+    const pincode = checkoutForm.querySelector('input[name="pincode"]').value;
+
+    if (!name || !phone || !email || !address || !city || !state || !pincode) {
+        alert("Please fill all required delivery details first.");
+        return;
+    }
+
+    document.getElementById("success_name").value = name;
+    document.getElementById("success_phone").value = phone;
+    document.getElementById("success_email").value = email;
+    document.getElementById("success_address").value = address;
+    document.getElementById("success_landmark").value = landmark;
+    document.getElementById("success_city").value = city;
+    document.getElementById("success_state").value = state;
+    document.getElementById("success_pincode").value = pincode;
+
+    var options = {
+        "key": "{{ razorpay_key_id|default:'' }}",
+        "amount": "{{ final_total|floatformat:0 }}00",
+        "currency": "INR",
+        "name": "MyStore",
+        "description": "Order Payment",
+        "order_id": "{{ razorpay_order_id|default:'' }}",
+
+        "method": {
+            "upi": true,
+            "card": true,
+            "netbanking": true,
+            "wallet": true,
+            "emi": false,
+            "paylater": false
+        },
+        "config": {
+            "display": {
+                "blocks": {
+                    "preferred": {
+                        "name": "Pay using UPI",
+                        "instruments": [
+                            {
+                                "method": "upi"
+                            }
+                        ]
+                    },
+                    "other": {
+                        "name": "Other Payment Methods",
+                        "instruments": [
+                            {
+                                "method": "card"
+                            },
+                            {
+                                "method": "netbanking"
+                            },
+                            {
+                                "method": "wallet"
+                            }
+                        ]
+                    }
+                },
+                "sequence": ["block.preferred", "block.other"],
+                "preferences": {
+                    "show_default_blocks": false
+                }
+            }
+        },
+
+        "handler": function (response) {
+            document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+            document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+            document.getElementById("razorpay_signature").value = response.razorpay_signature;
+            document.getElementById("payment-success-form").submit();
+        },
+        "prefill": {
+            "name": name,
+            "email": email,
+            "contact": phone
+        },
+        "notes": {
+            "address": address,
+            "landmark": landmark,
+            "city": city,
+            "state": state,
+            "pincode": pincode
+        },
+        "theme": {
+            "color": "#7c3aed"
+        },
+        "modal": {
+            "ondismiss": function () {
+                console.log("Payment popup closed");
+            }
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    rzp1.on('payment.failed', function (response) {
+        console.log("Payment failed:", response.error);
+        alert("Payment failed. Please try again.");
+    });
+
+    rzp1.open();
+}
+</script>
+
+{% endblock %}

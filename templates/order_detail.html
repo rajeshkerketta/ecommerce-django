@@ -1,0 +1,581 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.order-detail-page{
+    width: 92%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.order-detail-page .detail-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.order-detail-page .detail-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.order-detail-page .detail-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.order-detail-page .detail-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.order-detail-page .hero-title{
+    margin: 0 0 8px;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.order-detail-page .hero-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+}
+
+.order-detail-page .detail-layout{
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.order-detail-page .detail-card{
+    background: white;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    border: 1px solid #eef2f7;
+}
+
+.order-detail-page .section-title{
+    margin: 0 0 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.order-detail-page .info-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.order-detail-page .info-box{
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.order-detail-page .info-label{
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.order-detail-page .info-value{
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.order-detail-page .status-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.order-detail-page .status-pending{
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+.order-detail-page .status-confirmed{
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+}
+.order-detail-page .status-packed{
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+.order-detail-page .status-shipped{
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+.order-detail-page .status-out{
+    background: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+.order-detail-page .status-delivered{
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+.order-detail-page .status-cancelled{
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.order-detail-page .address-box{
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 16px;
+    padding: 18px;
+    line-height: 1.8;
+    color: #374151;
+    font-size: 15px;
+}
+
+.order-detail-page .tracking-box{
+    margin-top: 18px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    border-radius: 18px;
+    padding: 18px;
+}
+
+.order-detail-page .tracking-title{
+    font-size: 16px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 14px;
+}
+
+.order-detail-page .tracking-bar{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.order-detail-page .track-step{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-detail-page .track-node{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.order-detail-page .track-label{
+    font-size: 12px;
+    font-weight: 800;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+.order-detail-page .track-line{
+    width: 34px;
+    height: 3px;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.order-detail-page .track-done .track-node{
+    background: #dcfce7;
+    border-color: #bbf7d0;
+    color: #16a34a;
+}
+.order-detail-page .track-done .track-label{
+    color: #15803d;
+}
+.order-detail-page .track-line.done{
+    background: #4ade80;
+}
+
+.order-detail-page .track-active .track-node{
+    background: #ede9fe;
+    border-color: #ddd6fe;
+    color: #7c3aed;
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.08);
+}
+.order-detail-page .track-active .track-label{
+    color: #6d28d9;
+}
+
+.order-detail-page .icon-svg{
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.order-detail-page .item-list{
+    display: grid;
+    gap: 14px;
+}
+
+.order-detail-page .item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #eef2f7;
+}
+
+.order-detail-page .item-left{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1;
+}
+
+.order-detail-page .item-left img{
+    width: 78px;
+    height: 78px;
+    object-fit: contain;
+    background: white;
+    border-radius: 12px;
+    padding: 6px;
+    border: 1px solid #edf2f7;
+    flex-shrink: 0;
+}
+
+.order-detail-page .item-left h4{
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: #111827;
+    line-height: 1.45;
+}
+
+.order-detail-page .item-left p{
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.order-detail-page .item-price{
+    font-weight: 800;
+    color: #111827;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.order-detail-page .back-actions{
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.order-detail-page .action-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.order-detail-page .primary-btn{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+}
+
+.order-detail-page .primary-btn:hover{
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.order-detail-page .secondary-btn{
+    background: #111827;
+    color: white;
+}
+
+.order-detail-page .secondary-btn:hover{
+    background: #000;
+    color: white;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 950px){
+    .order-detail-page .detail-layout{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px){
+    .order-detail-page .info-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .order-detail-page .item{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-detail-page .hero-title{
+        font-size: 28px;
+    }
+}
+</style>
+
+<div class="order-detail-page">
+
+    <div class="detail-hero">
+        <div class="detail-hero-content">
+            <h1 class="hero-title">📦 Order #{{ order.id }}</h1>
+            <p class="hero-subtitle">Track your order details, delivery information, and ordered products in one place.</p>
+        </div>
+    </div>
+
+    <div class="detail-layout">
+
+        <!-- LEFT SIDE -->
+        <div class="detail-card">
+            <h2 class="section-title">Order Information</h2>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Order ID</div>
+                    <div class="info-value">#{{ order.id }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        {% if order.status == "pending" %}
+                            <span class="status-badge status-pending">Pending</span>
+                        {% elif order.status == "confirmed" %}
+                            <span class="status-badge status-confirmed">Confirmed</span>
+                        {% elif order.status == "packed" %}
+                            <span class="status-badge status-packed">Packed</span>
+                        {% elif order.status == "shipped" %}
+                            <span class="status-badge status-shipped">Shipped</span>
+                        {% elif order.status == "out_for_delivery" %}
+                            <span class="status-badge status-out">Out for Delivery</span>
+                        {% elif order.status == "delivered" %}
+                            <span class="status-badge status-delivered">Delivered</span>
+                        {% elif order.status == "cancelled" %}
+                            <span class="status-badge status-cancelled">Cancelled</span>
+                        {% else %}
+                            <span class="status-badge status-confirmed">{{ order.status|title }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Total Amount</div>
+                    <div class="info-value">₹{{ order.total }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Tracking ID</div>
+                    <div class="info-value">{{ order.tracking_id|default:"Not assigned" }}</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Payment Method</div>
+                    <div class="info-value">
+                        {% if order.payment_method == "cod" %}
+                            Cash on Delivery
+                        {% elif order.payment_method == "razorpay" %}
+                            Online Payment
+                        {% else %}
+                            {{ order.payment_method|title }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">Payment Status</div>
+                    <div class="info-value">
+                        {% if order.is_paid %}
+                            Paid
+                        {% else %}
+                            Pending
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if order.status != "cancelled" %}
+            <div class="tracking-box">
+                <div class="tracking-title">Order Tracking</div>
+
+                <div class="tracking-bar">
+                    <div class="track-step {% if order.status == 'pending' %}track-active{% elif order.status == 'confirmed' or order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M12 8v4l2.5 2.5"></path>
+                                <circle cx="12" cy="12" r="8"></circle>
+                            </svg>
+                        </div>
+                        <div class="track-label">Pending</div>
+                    </div>
+
+                    <div class="track-line {% if order.status == 'confirmed' or order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                    <div class="track-step {% if order.status == 'confirmed' %}track-active{% elif order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                        </div>
+                        <div class="track-label">Confirmed</div>
+                    </div>
+
+                    <div class="track-line {% if order.status == 'packed' or order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                    <div class="track-step {% if order.status == 'packed' %}track-active{% elif order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M21 8l-9-5-9 5 9 5 9-5z"></path>
+                                <path d="M3 8v8l9 5 9-5V8"></path>
+                            </svg>
+                        </div>
+                        <div class="track-label">Packed</div>
+                    </div>
+
+                    <div class="track-line {% if order.status == 'shipped' or order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                    <div class="track-step {% if order.status == 'shipped' %}track-active{% elif order.status == 'out_for_delivery' or order.status == 'delivered' %}track-done{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M3 7h13v10H3z"></path>
+                                <path d="M16 10h3l2 2v5h-5z"></path>
+                                <circle cx="7.5" cy="17.5" r="1.5"></circle>
+                                <circle cx="17.5" cy="17.5" r="1.5"></circle>
+                            </svg>
+                        </div>
+                        <div class="track-label">Shipped</div>
+                    </div>
+
+                    <div class="track-line {% if order.status == 'out_for_delivery' or order.status == 'delivered' %}done{% endif %}"></div>
+
+                    <div class="track-step {% if order.status == 'out_for_delivery' %}track-active{% elif order.status == 'delivered' %}track-done{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M14 3h7v7"></path>
+                                <path d="M10 14L21 3"></path>
+                                <path d="M21 14v7h-7"></path>
+                                <path d="M3 10L14 21"></path>
+                            </svg>
+                        </div>
+                        <div class="track-label">Out for Delivery</div>
+                    </div>
+
+                    <div class="track-line {% if order.status == 'delivered' %}done{% endif %}"></div>
+
+                    <div class="track-step {% if order.status == 'delivered' %}track-active{% endif %}">
+                        <div class="track-node">
+                            <svg class="icon-svg" viewBox="0 0 24 24">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                        </div>
+                        <div class="track-label">Delivered</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="back-actions">
+                <a href="{% url 'my_orders' %}" class="action-btn primary-btn">← Back to My Orders</a>
+                <a href="{% url 'shop' %}" class="action-btn secondary-btn">Continue Shopping</a>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="detail-card">
+            <h2 class="section-title">Delivery Address</h2>
+
+            <div class="address-box">
+                <strong>{{ order.name|default:"Customer" }}</strong><br>
+                {{ order.address|default:"N/A" }}<br>
+                Landmark: {{ order.landmark|default:"N/A" }}<br>
+                {{ order.city|default:"N/A" }}, {{ order.state|default:"N/A" }} - {{ order.pincode|default:"N/A" }}<br>
+                Phone: {{ order.phone|default:"N/A" }}<br>
+                Email: {{ order.email|default:"N/A" }}
+            </div>
+
+            <h2 class="section-title" style="margin-top: 24px;">Ordered Products</h2>
+
+            <div class="item-list">
+                {% for item in items %}
+                <div class="item">
+                    <div class="item-left">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        <div>
+                            <h4>{{ item.product.name }}</h4>
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <p>Unit Price: ₹{{ item.product.price }}</p>
+                        </div>
+                    </div>
+
+                    <div class="item-price">
+                        ₹{{ item.product.price }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

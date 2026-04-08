@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="max-width:700px; margin:40px auto; background:white; padding:30px; border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,0.06); text-align:center;">
+    <h2>Complete Payment</h2>
+    <p>Order #{{ order.id }}</p>
+    <p><strong>Total: ₹{{ final_total }}</strong></p>
+
+    <button id="rzp-button" style="padding:12px 20px; border:none; background:#7c3aed; color:white; border-radius:12px; font-weight:700; cursor:pointer;">
+        Pay with Razorpay
+    </button>
+
+    <form id="payment-success-form" action="{% url 'payment_success' %}" method="POST" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ final_total|floatformat:0 }}00",
+    "currency": "INR",
+    "name": "Rajesh Store",
+    "description": "Order Payment",
+    "order_id": "{{ razorpay_order_id }}",
+
+    "handler": function (response){
+        document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+        document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+        document.getElementById("razorpay_signature").value = response.razorpay_signature;
+        document.getElementById("payment-success-form").submit();
+    },
+
+    // 🔥 IMPORTANT — UPI / QR FIX
+    "config": {
+        "display": {
+            "blocks": {
+                "upi": {
+                    "name": "Pay using UPI",
+                    "instruments": [
+                        {
+                            "method": "upi"
+                        }
+                    ]
+                }
+            },
+            "sequence": ["block.upi"],
+            "preferences": {
+                "show_default_blocks": true
+            }
+        }
+    },
+
+    "prefill": {
+        "name": "{{ user.username }}",
+        "email": "{{ order.email }}",
+        "contact": "{{ order.phone }}"
+    },
+
+    "theme": {
+        "color": "#7c3aed"
+    }
+};
+
+var rzp1 = new Razorpay(options);
+
+document.getElementById('rzp-button').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+{% endblock %}

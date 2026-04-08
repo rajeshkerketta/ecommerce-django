@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.seller-products-page{
+    width: 92%;
+    max-width: 1280px;
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.seller-products-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.seller-products-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.seller-products-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.seller-products-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.seller-products-title{
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0 0 8px;
+}
+
+.seller-products-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+}
+
+.top-bar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.top-left{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.top-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #ede9fe;
+    color: #6d28d9;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.add-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(124,58,237,0.20);
+    transition: 0.25s ease;
+}
+
+.add-btn:hover{
+    transform: translateY(-2px);
+    color: white;
+}
+
+.product-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.product-card{
+    background: linear-gradient(145deg, #ffffff, #fbfbfd);
+    border-radius: 22px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px rgba(124,58,237,0.12);
+    border-color: #ddd6fe;
+}
+
+.product-image-wrap{
+    background: #f8fafc;
+    padding: 18px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.product-image{
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    border-radius: 14px;
+    background: white;
+}
+
+.product-body{
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.product-name{
+    font-size: 17px;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.4;
+    min-height: 46px;
+}
+
+.product-meta{
+    display: grid;
+    gap: 6px;
+}
+
+.product-meta span{
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.product-price{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.current-price{
+    color: #16a34a;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.old-price{
+    color: #9ca3af;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.product-actions{
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.edit-btn,
+.delete-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.edit-btn{
+    background: #111827;
+    color: white;
+}
+
+.edit-btn:hover{
+    background: #000;
+    color: white;
+}
+
+.delete-btn{
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.delete-btn:hover{
+    background: #fecaca;
+    color: #b91c1c;
+}
+
+.empty-box{
+    text-align: center;
+    padding: 70px 20px;
+    background: white;
+    border-radius: 22px;
+    border: 1px solid #ececf3;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+
+.empty-box h2{
+    color: #111827;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.empty-box p{
+    color: #6b7280;
+    font-size: 15px;
+    margin-bottom: 22px;
+}
+
+@media (max-width: 1100px){
+    .product-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px){
+    .product-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px){
+    .product-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .seller-products-title{
+        font-size: 28px;
+    }
+}
+</style>
+
+<div class="seller-products-page">
+
+    <div class="seller-products-hero">
+        <div class="seller-products-hero-content">
+            <h1 class="seller-products-title">🛍 My Products</h1>
+            <p class="seller-products-subtitle">Manage your uploaded products, edit details, or remove items from your store.</p>
+        </div>
+    </div>
+
+    <div class="top-bar">
+        <div class="top-left">
+            <span class="top-badge">Total Products: {{ products|length }}</span>
+        </div>
+
+        <a href="{% url 'seller_add_product' %}" class="add-btn">➕ Add New Product</a>
+    </div>
+
+    {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image-wrap">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image" class="product-image">
+                        {% endif %}
+                    </div>
+
+                    <div class="product-body">
+                        <div class="product-name">{{ product.name }}</div>
+
+                        <div class="product-meta">
+                            <span>
+                                Category:
+                                {% if product.category %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    No Category
+                                {% endif %}
+                            </span>
+
+                            <span>
+                                Description:
+                                {% if product.description %}
+                                    {{ product.description|truncatewords:10 }}
+                                {% else %}
+                                    No Description
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="product-price">
+                            <span class="current-price">₹{{ product.price }}</span>
+                            <!-- 🔥 STOCK -->
+                            <div style="margin-top:6px;">
+                                {% if product.stock > 0 %}
+                                    <span style="color:#059669; font-weight:700; font-size:13px;">
+                                        In Stock: {{ product.stock }}
+                                    </span>
+                                
+                                    {% if product.stock <= 5 %}
+                                        <span style="color:#f59e0b; font-size:12px; margin-left:6px;">
+                                            ⚠ Low
+                                        </span>
+                                    {% endif %}
+                                    
+                                {% else %}
+                                    <span style="color:#dc2626; font-weight:700; font-size:13px;">
+                                        Out of Stock
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% if product.original_price %}
+                                <span class="old-price">₹{{ product.original_price }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-actions">
+                            <a href="{% url 'seller_edit_product' product.id %}" class="edit-btn">✏ Edit</a>
+                            <a href="{% url 'seller_delete_product' product.id %}" class="delete-btn">🗑 Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-box">
+            <h2>No products yet</h2>
+            <p>You have not added any product yet. Start by adding your first product.</p>
+            <a href="{% url 'seller_add_product' %}" class="add-btn">Add Product</a>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

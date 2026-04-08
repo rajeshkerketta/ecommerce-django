@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h2>Search Results for "{{ query }}"</h2>
+
+<div class="row mt-4">
+
+{% for product in results %}
+    <div class="col-md-3">
+        <div class="card p-3">
+            <img src="{{ product.image.url }}" style="height:200px; object-fit:contain;">
+            <h5>{{ product.name }}</h5>
+            <p>₹{{ product.price }}</p>
+            <a href="/product/{{ product.id }}/" class="btn btn-dark">View</a>
+        </div>
+    </div>
+{% empty %}
+    <p>No products found 😢</p>
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

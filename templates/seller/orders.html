@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.page{
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 0;
+}
+
+.card{
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td{
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.status{
+    padding: 6px 10px;
+    border-radius: 20px;
+}
+
+.pending{background:#fef3c7;}
+.confirmed{background:#ddd6fe;}
+.packed{background:#e0f2fe;}
+.shipped{background:#dbeafe;}
+.delivered{background:#dcfce7;}
+.cancelled{background:#fee2e2;}
+
+.btn{
+    padding:6px 10px;
+    background:black;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+}
+</style>
+
+<div class="page">
+
+    <h2>📦 Seller Orders</h2>
+
+    <div class="card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Qty</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+
+                    <td>#{{ item.order.id }}</td>
+                    <td>{{ item.order.name }}</td>
+
+                    <td>{{ item.product.name }}</td>
+
+                    <td>
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}">
+                        {% endif %}
+                    </td>
+
+                    <td>{{ item.quantity }}</td>
+
+                    <td>
+                        <span class="status {{ item.order.status }}">
+                            {{ item.order.status }}
+                        </span>
+                    </td>
+
+                    <td>
+                        ₹{{ item.product.price }} × {{ item.quantity }}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'seller_order_detail' item.order.id %}" class="btn">
+                            View
+                        </a>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No Orders Found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

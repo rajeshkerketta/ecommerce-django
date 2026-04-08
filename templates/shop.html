@@ -1,0 +1,882 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.shop-page *{
+    box-sizing: border-box;
+}
+
+.toast{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #111827;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    font-weight: 600;
+    max-width: min(90vw, 320px);
+    word-break: break-word;
+}
+
+.toast.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.shop-page{
+    width: min(92%, 1280px);
+    margin: auto;
+    padding: 24px 0 40px;
+}
+
+.shop-hero{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 24px;
+    padding: 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.shop-hero::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -80px;
+    right: -60px;
+}
+
+.shop-hero::after{
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -40px;
+    right: 120px;
+}
+
+.shop-hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.shop-title{
+    margin: 0 0 8px;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.shop-subtitle{
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.6;
+    max-width: 720px;
+}
+
+.filters{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    margin-bottom: 28px;
+    border: 1px solid #ececf3;
+    position: sticky;
+    top: 90px;
+    z-index: 50;
+}
+
+.filters select,
+.filters input{
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    outline: none;
+    min-width: 150px;
+    background: #fff;
+    font-size: 14px;
+    transition: 0.25s ease;
+    min-height: 46px;
+}
+
+.filters select:focus,
+.filters input:focus{
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.08);
+}
+
+.filters input[type="text"]{
+    min-width: 240px;
+}
+
+.filters button{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+    transition: 0.25s ease;
+    min-height: 46px;
+    white-space: nowrap;
+}
+
+.filters button:hover{
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+}
+
+.product-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.card{
+    position: relative;
+    background: linear-gradient(145deg, #ffffff, #fbfbfd);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #ececf3;
+    min-width: 0;
+}
+
+.card:hover{
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(124,58,237,0.14);
+    border-color: #ddd6fe;
+}
+
+.offer{
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: white;
+    padding: 6px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    z-index: 2;
+    box-shadow: 0 8px 18px rgba(239,68,68,0.20);
+    max-width: calc(100% - 80px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wishlist-btn{
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255,255,255,0.96);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 700;
+    z-index: 2;
+    cursor: pointer;
+    transition: 0.25s ease;
+    border: none;
+    color: #6b7280;
+    backdrop-filter: blur(6px);
+    flex-shrink: 0;
+}
+
+.wishlist-btn:hover{
+    transform: scale(1.08);
+    color: #e11d48;
+}
+
+.wishlist-btn.active{
+    color: #e11d48;
+}
+
+.card a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.image-wrap{
+    background: linear-gradient(180deg, #f8fafc, #ffffff);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+.card img{
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.card:hover img{
+    transform: scale(1.08);
+}
+
+.card h3{
+    font-size: 17px;
+    margin: 8px 0 8px;
+    color: #111827;
+    min-height: 48px;
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.desc{
+    font-size: 13px;
+    color: #6b7280;
+    min-height: 42px;
+    margin-bottom: 10px;
+    line-height: 1.55;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.rating{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.rating-value{
+    color: #111827;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.stars{
+    color: #f59e0b;
+    font-size: 15px;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.rating-stars{
+    margin-bottom: 12px;
+}
+
+.rating-stars span{
+    cursor: pointer;
+    font-size: 18px;
+    color: #f59e0b;
+    margin-right: 2px;
+    transition: 0.2s ease;
+}
+
+.rating-stars span:hover{
+    transform: scale(1.12);
+}
+
+.price{
+    margin: 8px 0 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.price-top{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.new-price{
+    color: #16a34a;
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 1.2;
+}
+
+.old-price{
+    text-decoration: line-through;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.discount-text{
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.stock-text{
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.stock-in{
+    color: #16a34a;
+}
+
+.stock-out{
+    color: #dc2626;
+}
+
+.stock-low{
+    color: #f59e0b;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.card-actions{
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.cart-btn,
+.detail-btn{
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease;
+    min-height: 46px;
+    line-height: 1.4;
+}
+
+.cart-btn{
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+}
+
+.cart-btn:hover{
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    transform: translateY(-1px);
+}
+
+.detail-btn{
+    background: #111827;
+    color: #ffffff !important;
+}
+
+.detail-btn:hover{
+    background: #000;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.cart-btn:disabled{
+    background: #d1d5db !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+.empty{
+    text-align: center;
+    margin-top: 60px;
+    color: #6b7280;
+    background: white;
+    padding: 34px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    border: 1px solid #ececf3;
+}
+
+.empty h3{
+    margin: 0 0 10px;
+    color: #111827;
+    font-size: 28px;
+    line-height: 1.3;
+}
+
+.empty p{
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Large tablet */
+@media (max-width: 1100px){
+    .product-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Tablet */
+@media (max-width: 900px){
+    .shop-page{
+        width: min(94%, 1280px);
+    }
+
+    .filters{
+        justify-content: stretch;
+    }
+
+    .filters select,
+    .filters input,
+    .filters button{
+        flex: 1 1 calc(50% - 12px);
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+/* Small tablet */
+@media (max-width: 768px){
+    .shop-page{
+        padding: 18px 0 32px;
+    }
+
+    .shop-hero{
+        padding: 24px 18px;
+        border-radius: 20px;
+    }
+
+    .shop-title{
+        font-size: 28px;
+    }
+
+    .shop-subtitle{
+        font-size: 14px;
+    }
+
+    .product-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .filters{
+        top: 76px;
+        padding: 14px;
+    }
+
+    .filters select,
+    .filters input,
+    .filters button{
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .card{
+        border-radius: 18px;
+    }
+
+    .card-actions{
+        grid-template-columns: 1fr;
+    }
+
+    .card img{
+        height: 200px;
+    }
+
+    .new-price{
+        font-size: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 560px){
+    .product-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .shop-title{
+        font-size: 24px;
+    }
+
+    .offer{
+        font-size: 11px;
+        padding: 6px 10px;
+        max-width: calc(100% - 72px);
+    }
+
+    .wishlist-btn{
+        width: 42px;
+        height: 42px;
+        font-size: 22px;
+        top: 12px;
+        right: 12px;
+    }
+
+    .image-wrap{
+        padding: 14px;
+    }
+
+    .card img{
+        height: 210px;
+    }
+
+    .card h3{
+        font-size: 16px;
+        min-height: auto;
+    }
+
+    .desc{
+        min-height: auto;
+    }
+
+    .filters{
+        position: static;
+    }
+
+    .empty{
+        margin-top: 32px;
+        padding: 26px 18px;
+    }
+
+    .empty h3{
+        font-size: 24px;
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 420px){
+    .shop-page{
+        width: 95%;
+    }
+
+    .toast{
+        right: 50%;
+        transform: translate(50%, 18px);
+        bottom: 14px;
+        width: calc(100% - 24px);
+        max-width: none;
+        text-align: center;
+        padding: 12px 14px;
+        border-radius: 10px;
+    }
+
+    .toast.show{
+        transform: translate(50%, 0);
+    }
+
+    .shop-hero{
+        padding: 20px 14px;
+    }
+
+    .shop-title{
+        font-size: 22px;
+    }
+
+    .shop-subtitle{
+        font-size: 13px;
+    }
+
+    .filters{
+        padding: 12px;
+        border-radius: 16px;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .filters select,
+    .filters input,
+    .filters button{
+        padding: 11px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+        min-height: 42px;
+    }
+
+    .card{
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .offer{
+        top: 12px;
+        left: 12px;
+    }
+
+    .wishlist-btn{
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .card img{
+        height: 180px;
+    }
+
+    .rating{
+        gap: 6px;
+    }
+
+    .rating-value,
+    .stock-text,
+    .desc{
+        font-size: 12px;
+    }
+
+    .stars{
+        font-size: 14px;
+    }
+
+    .new-price{
+        font-size: 18px;
+    }
+
+    .old-price,
+    .discount-text{
+        font-size: 12px;
+    }
+
+    .cart-btn,
+    .detail-btn{
+        padding: 11px 12px;
+        min-height: 42px;
+        font-size: 13px;
+    }
+}
+</style>
+
+<div id="toast" class="toast"></div>
+
+<div class="shop-page">
+
+    <div class="shop-hero">
+        <div class="shop-hero-content">
+            <h1 class="shop-title">🛍 Product Listing Page</h1>
+            <p class="shop-subtitle">Explore trending products, filter smartly, and shop your favourites.</p>
+        </div>
+    </div>
+
+    <form method="GET" class="filters">
+        <select name="category">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                {{ cat.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}">
+
+        <select name="sort">
+            <option value="">Sort</option>
+            <option value="low" {% if request.GET.sort == "low" %}selected{% endif %}>Price Low → High</option>
+            <option value="high" {% if request.GET.sort == "high" %}selected{% endif %}>Price High → Low</option>
+        </select>
+
+        <input type="number" name="min" placeholder="Min ₹" value="{{ request.GET.min }}">
+        <input type="number" name="max" placeholder="Max ₹" value="{{ request.GET.max }}">
+
+        <button type="submit">Apply</button>
+    </form>
+
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card">
+
+            {% if product.discount_percentage %}
+                <div class="offer">{{ product.discount_percentage }}% OFF</div>
+            {% else %}
+                <div class="offer">SALE</div>
+            {% endif %}
+
+            <button
+               type="button"
+               class="wishlist-btn {% if product.id in wishlist_products %}active{% endif %}"
+               onclick="handleWishlist({{ product.id }}, this, {{ user.is_authenticated|yesno:'true,false' }})"
+               title="Wishlist"
+               aria-label="Add to wishlist">
+               ♥
+            </button>
+
+            <a href="{% url 'product_detail' product.id %}">
+                <div class="image-wrap">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                </div>
+                <h3>{{ product.name }}</h3>
+            </a>
+
+            <p class="desc">{{ product.description|truncatewords:10 }}</p>
+
+            <div class="rating">
+                <div class="stars">
+                    {% if product.average_rating >= 1 %}★{% else %}☆{% endif %}
+                    {% if product.average_rating >= 2 %}★{% else %}☆{% endif %}
+                    {% if product.average_rating >= 3 %}★{% else %}☆{% endif %}
+                    {% if product.average_rating >= 4 %}★{% else %}☆{% endif %}
+                    {% if product.average_rating >= 5 %}★{% else %}☆{% endif %}
+                </div>
+                <div class="rating-value">
+                    {{ product.average_rating|floatformat:1 }} / 5
+                </div>
+            </div>
+
+            <div class="price">
+                <div class="price-top">
+                    <span class="new-price">₹{{ product.price }}</span>
+
+                    {% if product.original_price %}
+                        <span class="old-price">₹{{ product.original_price }}</span>
+                    {% endif %}
+
+                    {% if product.discount_percentage %}
+                        <span class="discount-text">{{ product.discount_percentage }}% OFF</span>
+                    {% endif %}
+                </div>
+
+                <div class="stock-text">
+                    {% if product.stock > 0 %}
+                        <span class="stock-in">In Stock ({{ product.stock }})</span>
+                        {% if product.stock <= 5 %}
+                            <span class="stock-low">⚠ Low</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="stock-out">Out of Stock</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <a href="{% url 'product_detail' product.id %}" class="detail-btn">View Details</a>
+
+                {% if product.stock > 0 %}
+                    <button type="button" onclick="addToCart({{ product.id }})" class="cart-btn">
+                        🛒 Add to Cart
+                    </button>
+                {% else %}
+                    <button type="button" class="cart-btn" disabled>
+                        ❌ Out of Stock
+                    </button>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        <h3>No products found 😢</h3>
+        <p>Try changing filters or search keywords.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function showToast(text) {
+    const toast = document.getElementById("toast");
+    toast.innerText = text;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+
+function handleWishlist(productId, btn, isAuthenticated) {
+    if (!isAuthenticated) {
+        window.location.href = "/accounts/login/";
+        return;
+    }
+
+    fetch(`/wishlist/${productId}/`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "added") {
+            btn.classList.add("active");
+            showToast("Added to wishlist");
+        } else {
+            btn.classList.remove("active");
+            showToast("Removed from wishlist");
+        }
+    })
+    .catch(() => {
+        showToast("Wishlist action failed");
+    });
+}
+
+function rateProduct(productId, value) {
+    fetch(`/rate/${productId}/${value}/`)
+    .then(res => res.json())
+    .then(() => {
+        showToast("Rating submitted ⭐");
+    })
+    .catch(() => {
+        showToast("Rating failed");
+    });
+}
+
+function addToCart(id) {
+    fetch(`/add-to-cart-ajax/${id}/`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.error === "out_of_stock") {
+            showToast("❌ Product out of stock");
+            return;
+        }
+
+        if (data.error === "stock_limit") {
+            showToast("⚠ Stock limit reached");
+            return;
+        }
+
+        const cartCountById = document.getElementById("cart-count");
+        const cartCountByClass = document.querySelector(".cart-count");
+
+        if (cartCountById) cartCountById.innerText = data.count;
+        if (cartCountByClass) cartCountByClass.innerText = data.count;
+
+        showToast("Added to cart 🛒");
+    })
+    .catch(() => {
+        showToast("Error adding product");
+    });
+}
+</script>
+
+{% endblock %}

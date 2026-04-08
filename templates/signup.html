@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+
+<style>
+.signup-page{
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 0 50px;
+}
+
+.signup-page .signup-wrap{
+    min-height: 78vh;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.signup-page .signup-left{
+    background: linear-gradient(135deg, #111827 0%, #1f1147 55%, #7c3aed 100%);
+    border-radius: 26px;
+    padding: 38px 34px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.16);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.signup-page .signup-left::before{
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -90px;
+    right: -70px;
+}
+
+.signup-page .signup-left::after{
+    content: "";
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    bottom: -50px;
+    left: -30px;
+}
+
+.signup-page .hero-content{
+    position: relative;
+    z-index: 1;
+}
+
+.signup-page .hero-badge{
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.signup-page .hero-title{
+    margin: 0 0 12px;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.15;
+}
+
+.signup-page .hero-text{
+    margin: 0 0 22px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.92);
+    max-width: 520px;
+}
+
+.signup-page .hero-points{
+    display: grid;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.signup-page .hero-point{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.95);
+}
+
+.signup-page .signup-card{
+    background: #ffffff;
+    border-radius: 26px;
+    padding: 34px 30px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.07);
+    border: 1px solid #ececf3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.signup-page .card-title{
+    margin: 0 0 6px;
+    font-size: 30px;
+    font-weight: 900;
+    color: #111827;
+}
+
+.signup-page .card-subtitle{
+    margin: 0 0 24px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.signup-page .form-group{
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.signup-page label{
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+}
+
+.signup-page input{
+    width: 100%;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    padding: 13px 42px 13px 14px;
+    font-size: 14px;
+    outline: none;
+    background: #f8fafc;
+    color: #111827;
+    transition: 0.25s ease;
+}
+
+.signup-page input:focus{
+    border-color: #8b5cf6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.10);
+}
+
+.signup-page .password-toggle{
+    position: absolute;
+    right: 14px;
+    top: 40px;
+    cursor: pointer;
+    user-select: none;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.signup-page .signup-btn{
+    width: 100%;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+    margin-top: 6px;
+}
+
+.signup-page .signup-btn:hover{
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+}
+
+.signup-page .divider{
+    position: relative;
+    text-align: center;
+    margin: 22px 0;
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.signup-page .divider::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 42%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.signup-page .divider::after{
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 42%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.signup-page .google-link{
+    text-decoration: none;
+}
+
+.signup-page .google-btn{
+    width: 100%;
+    background: #ffffff;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.signup-page .google-btn:hover{
+    background: #f9fafb;
+    transform: translateY(-1px);
+}
+
+.signup-page .google-btn img{
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.signup-page .auth-link{
+    text-align: center;
+    margin-top: 18px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.signup-page .auth-link a{
+    color: #7c3aed;
+    font-weight: 800;
+}
+
+.signup-page .auth-link a:hover{
+    color: #6d28d9;
+}
+
+.signup-page .alert-box{
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.signup-page .help-text{
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px){
+    .signup-page .signup-wrap{
+        grid-template-columns: 1fr;
+    }
+
+    .signup-page .hero-title{
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 600px){
+    .signup-page .signup-card,
+    .signup-page .signup-left{
+        padding: 24px 20px;
+    }
+
+    .signup-page .card-title{
+        font-size: 26px;
+    }
+
+    .signup-page .hero-title{
+        font-size: 28px;
+    }
+}
+</style>
+
+<div class="signup-page">
+    <div class="signup-wrap">
+
+        <div class="signup-left">
+            <div class="hero-content">
+                <div class="hero-badge">🚀 Join Us</div>
+                <h1 class="hero-title">Create your account and start shopping smarter</h1>
+                <p class="hero-text">
+                    Sign up to save your wishlist, track orders, enjoy faster checkout, and manage everything from your personal dashboard.
+                </p>
+
+                <div class="hero-points">
+                    <div class="hero-point">❤️ Save products to wishlist</div>
+                    <div class="hero-point">📦 Track all your orders</div>
+                    <div class="hero-point">⚡ Faster checkout and account access</div>
+                    <div class="hero-point">🎁 Access offers and exclusive benefits</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="signup-card">
+            <h2 class="card-title">Create Account</h2>
+            <p class="card-subtitle">Fill in your details to get started.</p>
+
+            {% if form.errors %}
+                <div class="alert-box">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div>{{ field.label }}: {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <input type="text" id="id_username" name="username" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    <input type="email" id="id_email" name="email" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pass1">Password</label>
+                    <input type="password" id="pass1" name="password1" autocomplete="new-password" required>
+                    <span class="password-toggle" onclick="togglePass('pass1')">👁</span>
+                    <div class="help-text">Use a strong password for better account security.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pass2">Confirm Password</label>
+                    <input type="password" id="pass2" name="password2" autocomplete="new-password" required>
+                    <span class="password-toggle" onclick="togglePass('pass2')">👁</span>
+                </div>
+
+                <button type="submit" class="signup-btn">Create Account</button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <a href="{% provider_login_url 'google' %}" class="google-link">
+                <button type="button" class="google-btn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
+                    Continue with Google
+                </button>
+            </a>
+
+            <div class="auth-link">
+                Already have an account?
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function togglePass(id) {
+    let field = document.getElementById(id);
+    field.type = field.type === "password" ? "text" : "password";
+}
+</script>
+
+{% endblock %}
