@@ -1,7 +1,3 @@
-"""
-URL configuration for ecommerce project.
-"""
-
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -15,7 +11,6 @@ urlpatterns = [
 
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
-    # path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
