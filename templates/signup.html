@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load socialaccount %}
 
 {% block content %}
 
@@ -371,15 +370,6 @@
 
                 <button type="submit" class="signup-btn">Create Account</button>
             </form>
-
-            <div class="divider">OR</div>
-
-            <a href="{% provider_login_url 'google' %}" class="google-link">
-                <button type="button" class="google-btn">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
-                    Continue with Google
-                </button>
-            </a>
 
             <div class="auth-link">
                 Already have an account?
