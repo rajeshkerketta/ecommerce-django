@@ -377,7 +377,7 @@
         width:100%;
         background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
         border-top:1px solid rgba(255,255,255,0.08);
-        padding:14px 18px 18px;
+        padding:12px 14px 14px;
         position: sticky;
         top: 68px;
         z-index: 999;
@@ -389,12 +389,12 @@
 
     .mobile-search{
         width:100%;
-        margin-bottom:14px;
+        margin-bottom:12px;
     }
 
     .mobile-links{
         display:grid;
-        gap:10px;
+        gap:8px;
     }
 
     .mobile-links a,
@@ -408,9 +408,9 @@
         background: rgba(255,255,255,0.06);
         color:white;
         border:1px solid rgba(255,255,255,0.06);
-        padding:12px 14px;
-        border-radius:14px;
-        font-size:14px;
+        padding:11px 13px;
+        border-radius:12px;
+        font-size:13px;
         font-weight:700;
         text-decoration:none;
         cursor:pointer;
@@ -426,17 +426,42 @@
         display:flex;
         align-items:center;
         gap:10px;
-        margin-bottom:14px;
-        padding:12px 14px;
+        margin-bottom:12px;
+        padding:11px 13px;
         background: rgba(255,255,255,0.06);
         border:1px solid rgba(255,255,255,0.06);
-        border-radius:16px;
+        border-radius:14px;
         color:white;
     }
 
     .mobile-user .profile-avatar{
-        width:34px;
-        height:34px;
+        width:32px;
+        height:32px;
+    }
+
+    /* SEARCH PANEL UNDER NAVBAR */
+    .bottom-search-panel{
+        display:none;
+        position: sticky;
+        top: 68px;
+        z-index: 998;
+        width:100%;
+        background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
+        border-top:1px solid rgba(255,255,255,0.08);
+        border-bottom:1px solid rgba(255,255,255,0.08);
+        padding:10px 12px;
+    }
+
+    .bottom-search-panel.active{
+        display:block;
+    }
+
+    .bottom-search-panel .search-box{
+        min-width:0;
+        max-width:none;
+        width:100%;
+        box-shadow:none;
+        border:none;
     }
 
     /* CONTENT WRAP */
@@ -592,6 +617,56 @@
         background: rgba(0,0,0,0.08);
     }
 
+    /* MOBILE BOTTOM NAV */
+    .global-bottom-nav{
+        display:none;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        z-index:1040;
+        background:rgba(8,12,24,0.98);
+        border-top:1px solid rgba(255,255,255,0.08);
+        grid-template-columns:repeat(5, 1fr);
+        padding:6px 3px calc(6px + env(safe-area-inset-bottom));
+        box-shadow:0 -10px 24px rgba(0,0,0,0.15);
+    }
+
+    .global-bottom-link{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:4px;
+        color:rgba(255,255,255,0.70);
+        text-decoration:none;
+        font-size:10px;
+        font-weight:700;
+        min-height:52px;
+        background:none;
+        border:none;
+        cursor:pointer;
+        border-radius:12px;
+        transition:0.25s ease;
+    }
+
+    .global-bottom-link i{
+        font-size:18px;
+        transition:0.25s ease;
+    }
+
+    .global-bottom-link.active{
+        color:#60a5fa;
+    }
+
+    .global-bottom-link.active i{
+        transform: translateY(-1px) scale(1.05);
+    }
+
+    .global-bottom-link:hover{
+        color:#ffffff;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1100px){
         .footer-container{
@@ -617,8 +692,13 @@
             display:none;
         }
 
+        /* mobile me navbar ka menu icon hide */
         .menu-toggle{
-            display:flex;
+            display:none !important;
+        }
+
+        .global-bottom-nav{
+            display:grid;
         }
 
         .nav-left{
@@ -644,7 +724,7 @@
         }
 
         .page-content{
-            padding:16px;
+            padding:16px 16px 82px;
         }
     }
 
@@ -668,7 +748,7 @@
         }
 
         .page-content{
-            padding:14px;
+            padding:14px 14px 82px;
         }
     }
 
@@ -701,6 +781,10 @@
         .mobile-nav{
             top: 62px;
             padding:12px;
+        }
+
+        .bottom-search-panel{
+            top: 62px;
         }
     }
     </style>
@@ -775,6 +859,13 @@
         </button>
 
     </div>
+</div>
+
+<div class="bottom-search-panel" id="bottomSearchPanel">
+    <form method="GET" action="/" class="search-box">
+        <input type="text" name="q" placeholder="Search for products, brands and more..." value="{{ request.GET.q }}">
+        <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
 </div>
 
 <div class="mobile-nav" id="mobileNav">
@@ -872,6 +963,33 @@
     </div>
 </footer>
 
+<div class="global-bottom-nav">
+    <a href="/" class="global-bottom-link" data-nav="home">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="/shop/" class="global-bottom-link" data-nav="shop">
+        <i class="fas fa-bag-shopping"></i>
+        <span>Shop</span>
+    </a>
+
+    <button type="button" class="global-bottom-link" data-nav="search" onclick="toggleBottomSearch()">
+        <i class="fas fa-search"></i>
+        <span>Search</span>
+    </button>
+
+    <a href="/accounts/profile/" class="global-bottom-link" data-nav="account">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+    <button type="button" class="global-bottom-link" data-nav="menu" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+        <span>Menu</span>
+    </button>
+</div>
+
 <script>
 function toggleProfileDropdown(event) {
     event.stopPropagation();
@@ -881,25 +999,78 @@ function toggleProfileDropdown(event) {
     }
 }
 
-function toggleMobileMenu() {
-    const mobileNav = document.getElementById("mobileNav");
-    const menuToggle = document.getElementById("menuToggle");
+function setActiveBottomNav(name) {
+    const links = document.querySelectorAll(".global-bottom-link");
+    links.forEach(link => link.classList.remove("active"));
 
-    if (mobileNav) {
-        mobileNav.classList.toggle("active");
+    const activeLink = document.querySelector(`.global-bottom-link[data-nav="${name}"]`);
+    if (activeLink) {
+        activeLink.classList.add("active");
+    }
+}
+
+function setActiveNavByPath() {
+    const path = window.location.pathname;
+
+    if (path === "/") {
+        setActiveBottomNav("home");
+    } else if (path.startsWith("/shop")) {
+        setActiveBottomNav("shop");
+    } else if (path.startsWith("/accounts/profile")) {
+        setActiveBottomNav("account");
+    } else {
+        setActiveBottomNav("home");
+    }
+}
+
+function toggleBottomSearch() {
+    const panel = document.getElementById("bottomSearchPanel");
+    const mobileNav = document.getElementById("mobileNav");
+
+    if (mobileNav && mobileNav.classList.contains("active")) {
+        mobileNav.classList.remove("active");
     }
 
-    if (menuToggle) {
-        const icon = menuToggle.querySelector("i");
-        if (mobileNav.classList.contains("active")) {
-            icon.classList.remove("fa-bars");
-            icon.classList.add("fa-times");
+    if (panel) {
+        panel.classList.toggle("active");
+
+        if (panel.classList.contains("active")) {
+            setActiveBottomNav("search");
         } else {
-            icon.classList.remove("fa-times");
-            icon.classList.add("fa-bars");
+            setActiveNavByPath();
         }
     }
 }
+
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById("mobileNav");
+    const searchPanel = document.getElementById("bottomSearchPanel");
+
+    if (searchPanel && searchPanel.classList.contains("active")) {
+        searchPanel.classList.remove("active");
+    }
+
+    if (mobileNav) {
+        mobileNav.classList.toggle("active");
+
+        if (mobileNav.classList.contains("active")) {
+            setActiveBottomNav("menu");
+        } else {
+            setActiveNavByPath();
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    setActiveNavByPath();
+
+    document.querySelectorAll('.global-bottom-link[data-nav="home"], .global-bottom-link[data-nav="shop"], .global-bottom-link[data-nav="account"]').forEach(link => {
+        link.addEventListener("click", function() {
+            const navName = this.getAttribute("data-nav");
+            setActiveBottomNav(navName);
+        });
+    });
+});
 
 document.addEventListener("click", function(event) {
     const dropdown = document.getElementById("profileDropdown");
@@ -908,19 +1079,26 @@ document.addEventListener("click", function(event) {
     }
 
     const mobileNav = document.getElementById("mobileNav");
-    const menuToggle = document.getElementById("menuToggle");
+    const searchPanel = document.getElementById("bottomSearchPanel");
 
-    if (
-        mobileNav &&
-        menuToggle &&
-        mobileNav.classList.contains("active") &&
-        !mobileNav.contains(event.target) &&
-        !menuToggle.contains(event.target)
-    ) {
-        mobileNav.classList.remove("active");
-        const icon = menuToggle.querySelector("i");
-        icon.classList.remove("fa-times");
-        icon.classList.add("fa-bars");
+    const clickedBottomLink = event.target.closest(".global-bottom-link");
+
+    if (mobileNav && !mobileNav.contains(event.target)) {
+        if (!clickedBottomLink || clickedBottomLink.getAttribute("data-nav") !== "menu") {
+            if (mobileNav.classList.contains("active")) {
+                mobileNav.classList.remove("active");
+                setActiveNavByPath();
+            }
+        }
+    }
+
+    if (searchPanel && !searchPanel.contains(event.target)) {
+        if (!clickedBottomLink || clickedBottomLink.getAttribute("data-nav") !== "search") {
+            if (searchPanel.classList.contains("active")) {
+                searchPanel.classList.remove("active");
+                setActiveNavByPath();
+            }
+        }
     }
 });
 </script>
