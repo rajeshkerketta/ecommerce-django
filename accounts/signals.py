@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Profile, SellerApplication
+from .models import Profile, SellerApplication, Seller
 
 
 # =========================
@@ -12,6 +12,22 @@ from .models import Profile, SellerApplication
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+# =========================
+# AUTO CREATE / UPDATE SELLER ON APPROVAL
+# =========================
+@receiver(post_save, sender=SellerApplication)
+def create_seller_on_approval(sender, instance, **kwargs):
+    if instance.status == 'approved':
+        Seller.objects.update_or_create(
+            user=instance.user,
+            defaults={
+                'shop_name': instance.shop_name,
+                'phone': instance.phone,
+                'address': instance.address,
+                'is_approved': True,
+            }
+        )
 
 
 # =========================
