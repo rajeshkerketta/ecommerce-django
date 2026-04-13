@@ -440,17 +440,18 @@
     }
 
     /* SEARCH PANEL UNDER NAVBAR */
-.bottom-search-panel{
-    display:none;
-    position: sticky;
-    top: 64px; /* exact navbar ke niche */
-    z-index: 1200; /* navbar se upar */
-    width:100%;
-    background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
-    border-top:1px solid rgba(255,255,255,0.08);
-    border-bottom:1px solid rgba(255,255,255,0.08);
-    padding:10px 12px;
-}
+    .bottom-search-panel{
+        display:none;
+        position: sticky;
+        top: 64px;
+        z-index: 1200;
+        width:100%;
+        background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
+        border-top:1px solid rgba(255,255,255,0.08);
+        border-bottom:1px solid rgba(255,255,255,0.08);
+        padding:10px 12px;
+        transition: all 0.25s ease;
+    }
 
     .bottom-search-panel.active{
         display:block;
@@ -460,6 +461,7 @@
         min-width:0;
         max-width:none;
         width:100%;
+        display:flex;
         box-shadow:none;
         border:none;
     }
@@ -685,11 +687,21 @@
         }
 
         .nav-links,
-        .search-box,
         .orders-link,
         .auth-links,
         .dropdown{
             display:none;
+        }
+
+        /* only top navbar search hide */
+        .navbar .search-box{
+            display:none;
+        }
+
+        /* mobile search panels visible */
+        .bottom-search-panel .search-box,
+        .mobile-nav .search-box{
+            display:flex;
         }
 
         /* mobile me navbar ka menu icon hide */
@@ -1055,6 +1067,8 @@ function toggleBottomSearch() {
         panel.classList.toggle("active");
 
         if (panel.classList.contains("active")) {
+            const input = panel.querySelector("input");
+            if (input) input.focus();
             setActiveBottomNav("search");
         } else {
             setActiveNavByPath();
