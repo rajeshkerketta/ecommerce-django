@@ -21,6 +21,11 @@ def seller_required(view_func):
         if not seller_exists:
             messages.error(request, "You are not an approved seller.")
             return redirect("home")
+        
+        if not request.user.profile.is_seller:
+            messages.error(request, "You are not an approved seller.")
+            return redirect('profile')
+
 
         return view_func(request, *args, **kwargs)
     return wrapper

@@ -533,6 +533,121 @@
     line-height: 1.7;
 }
 
+/* SELLER CARD */
+.profile-page .seller-status-card{
+    margin-top: 22px;
+    background: #ffffff;
+    border: 1px solid #ececf3;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+.profile-page .seller-status-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.profile-page .seller-status-head h3{
+    margin: 0;
+    font-size: 22px;
+    color: #111827;
+    font-weight: 800;
+}
+
+.profile-page .seller-status-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.profile-page .seller-status-badge.approved{
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.profile-page .seller-status-badge.pending{
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.profile-page .seller-status-badge.rejected{
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.profile-page .seller-status-badge.default{
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.profile-page .seller-status-text{
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+.profile-page .seller-reason{
+    margin-bottom: 14px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #9a3412;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.profile-page .seller-action-row{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-page .seller-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.profile-page .seller-btn.primary{
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    color: white;
+}
+
+.profile-page .seller-btn.primary:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(124,58,237,0.20);
+}
+
+.profile-page .seller-btn.secondary{
+    background: #f8fafc;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+}
+
+.profile-page .seller-btn.secondary:hover{
+    background: #f3f4f6;
+}
+
 @media (max-width: 1150px){
     .profile-page .quick-cards{
         grid-template-columns: repeat(2, 1fr);
@@ -570,6 +685,10 @@
 
     .profile-page .hero-title{
         font-size: 28px;
+    }
+
+    .profile-page .seller-status-head h3{
+        font-size: 20px;
     }
 }
 </style>
@@ -814,6 +933,80 @@
                         <span class="status-pill">Coming Soon</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="seller-status-card">
+                <div class="seller-status-head">
+                    <h3>Seller Account</h3>
+
+                    {% if user.profile.is_seller %}
+                        <span class="seller-status-badge approved">✅ Approved Seller</span>
+                    {% else %}
+                        {% if latest_application %}
+                            {% if latest_application.status == 'pending' %}
+                                <span class="seller-status-badge pending">⏳ Pending Review</span>
+                            {% elif latest_application.status == 'rejected' %}
+                                <span class="seller-status-badge rejected">❌ Rejected</span>
+                            {% elif latest_application.status == 'approved' %}
+                                <span class="seller-status-badge approved">✅ Approved Seller</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="seller-status-badge default">📝 Customer Account</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if user.profile.is_seller %}
+                    <p class="seller-status-text">
+                        Your seller account is active. You can now manage products, view orders, and access your seller dashboard.
+                    </p>
+
+                    <div class="seller-action-row">
+                        <a href="/seller/dashboard/" class="seller-btn primary">🛍 Go to Seller Dashboard</a>
+                    </div>
+
+                {% else %}
+                    {% if latest_application %}
+                        {% if latest_application.status == 'pending' %}
+                            <p class="seller-status-text">
+                                Your seller application is under review. Till then, you can continue using the website as a normal customer.
+                            </p>
+
+                        {% elif latest_application.status == 'rejected' %}
+                            <p class="seller-status-text">
+                                Your previous seller application was not approved. You can review the reason below and apply again.
+                            </p>
+
+                            {% if latest_application.admin_note %}
+                                <div class="seller-reason">
+                                    <strong>Reason:</strong> {{ latest_application.admin_note }}
+                                </div>
+                            {% endif %}
+
+                            <div class="seller-action-row">
+                                <a href="{% url 'reapply_seller' %}" class="seller-btn primary">🔁 Re-Apply</a>
+                            </div>
+
+                        {% elif latest_application.status == 'approved' %}
+                            <p class="seller-status-text">
+                                Your seller account is active. You can now manage products, view orders, and access your seller dashboard.
+                            </p>
+
+                            <div class="seller-action-row">
+                                <a href="/seller/dashboard/" class="seller-btn primary">🛍 Go to Seller Dashboard</a>
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+                        <p class="seller-status-text">
+                            You are currently using the website as a normal customer. Want to start selling? Submit a seller application and wait for admin approval.
+                        </p>
+
+                        <div class="seller-action-row">
+                            <a href="{% url 'become_seller' %}" class="seller-btn primary">📝 Become a Seller</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
             </div>
 
             <p class="muted">

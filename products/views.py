@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from accounts.decorators import seller_required
 
 import razorpay
 

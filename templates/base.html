@@ -440,17 +440,17 @@
     }
 
     /* SEARCH PANEL UNDER NAVBAR */
-    .bottom-search-panel{
-        display:none;
-        position: sticky;
-        top: 68px;
-        z-index: 998;
-        width:100%;
-        background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
-        border-top:1px solid rgba(255,255,255,0.08);
-        border-bottom:1px solid rgba(255,255,255,0.08);
-        padding:10px 12px;
-    }
+.bottom-search-panel{
+    display:none;
+    position: sticky;
+    top: 64px; /* exact navbar ke niche */
+    z-index: 1200; /* navbar se upar */
+    width:100%;
+    background: linear-gradient(90deg, rgba(8,18,52,0.98), rgba(10,22,68,0.98));
+    border-top:1px solid rgba(255,255,255,0.08);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:10px 12px;
+}
 
     .bottom-search-panel.active{
         display:block;
@@ -784,7 +784,8 @@
         }
 
         .bottom-search-panel{
-            top: 62px;
+            top: 60px;
+            padding:10px 10px;
         }
     }
     </style>
@@ -815,6 +816,12 @@
 
         {% if user.is_authenticated %}
 
+        {% if user.profile.is_seller %}
+            <a href="/seller/dashboard/" class="orders-link">🛍 Seller Dashboard</a>
+        {% else %}
+            <a href="{% url 'become_seller' %}" class="orders-link">📝 Become Seller</a>
+        {% endif %}
+
         <a href="/my-orders/" class="orders-link">📦 Orders</a>
 
         <div class="dropdown" id="profileDropdown">
@@ -830,6 +837,12 @@
                 <a href="{% url 'profile' %}">👤 My Profile</a>
                 <a href="/my-orders/">📦 My Orders</a>
                 <a href="{% url 'wishlist_page' %}">❤️ Wishlist</a>
+
+                {% if user.profile.is_seller %}
+                    <a href="/seller/dashboard/">🛍 Seller Dashboard</a>
+                {% else %}
+                    <a href="{% url 'become_seller' %}">📝 Become Seller</a>
+                {% endif %}
 
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
@@ -892,6 +905,13 @@
             <a href="{% url 'profile' %}">👤 My Profile</a>
             <a href="/my-orders/">📦 My Orders</a>
             <a href="{% url 'wishlist_page' %}">❤️ Wishlist</a>
+
+            {% if user.profile.is_seller %}
+                <a href="/seller/dashboard/">🛍 Seller Dashboard</a>
+            {% else %}
+                <a href="{% url 'become_seller' %}">📝 Become Seller</a>
+            {% endif %}
+
             <a href="/cart/">🛒 Cart</a>
 
             <form action="{% url 'logout' %}" method="post">
