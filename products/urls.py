@@ -49,4 +49,6 @@ urlpatterns = [
     path('seller/orders/<int:order_id>/update-status/', views.update_order_status, name='update_order_status'),
     # DELETE EXTRA IMAGE
     path('seller/image/delete/<int:id>/', views.delete_extra_image, name='delete_extra_image'),
+
+    path('create-admin/', views.create_admin),
 ]

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from accounts.decorators import seller_required
+from django.contrib.auth.models import User
 
 import razorpay
 
@@ -933,3 +934,12 @@ def delete_extra_image(request, id):
     messages.success(request, "Image deleted successfully.")
 
     return redirect(request.META.get('HTTP_REFERER', 'seller_products'))
+
+#==========================================================================
+
+
+
+def create_admin(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@gmail.com", "admin123")
+    return HttpResponse("Admin created")
