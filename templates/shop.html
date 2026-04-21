@@ -65,62 +65,23 @@
 }
 
 .shop-mobile-filters{
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.shop-mobile-filters::-webkit-scrollbar{
-    display: none;
-}
-
-.shop-mobile-field{
-    flex: 0 0 auto;
-}
-
-.shop-mobile-field.search{
-    min-width: 135px;
-}
-
-.shop-mobile-field.select-sm{
-    min-width: 92px;
-}
-
-.shop-mobile-field.number-sm{
-    min-width: 72px;
-}
-
-.shop-mobile-field.button-sm{
-    min-width: 76px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.9fr 0.9fr;
+    gap: 7px;
+    width: 100%;
 }
 
 .shop-mobile-filters select,
 .shop-mobile-filters input{
     width: 100%;
     min-width: 0;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 7px 8px;
+    border-radius: 9px;
     border: 1px solid rgba(255,255,255,0.18);
     background: rgba(255,255,255,0.96);
     outline: none;
-    font-size: 12px;
-    min-height: 34px;
-    white-space: nowrap;
-}
-
-.shop-mobile-filters button{
-    width: 100%;
-    border: none;
-    border-radius: 10px;
-    background: #111827;
-    color: white;
-    font-weight: 700;
-    font-size: 12px;
-    min-height: 34px;
-    cursor: pointer;
-    padding: 0 10px;
+    font-size: 11px;
+    min-height: 32px;
     white-space: nowrap;
 }
 
@@ -168,7 +129,7 @@
 .shop-mobile-image{
     position: relative;
     display: block;
-    height: 136px;
+    height: 132px;
     background: #f8fafc;
     padding: 10px;
 }
@@ -280,8 +241,8 @@
 
 .shop-mobile-actions{
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
 }
 
 .shop-mobile-btn,
@@ -289,14 +250,17 @@
     width: 100%;
     border: none;
     border-radius: 10px;
-    min-height: 38px;
-    font-size: 12px;
+    min-height: 34px;
+    font-size: 11px;
     font-weight: 700;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding: 0 6px;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .shop-mobile-detail{
@@ -345,32 +309,49 @@
     }
 
     .shop-mobile-filters{
-        gap: 7px;
-    }
-
-    .shop-mobile-field.search{
-        min-width: 120px;
-    }
-
-    .shop-mobile-field.select-sm{
-        min-width: 84px;
-    }
-
-    .shop-mobile-field.number-sm{
-        min-width: 66px;
-    }
-
-    .shop-mobile-field.button-sm{
-        min-width: 70px;
+        gap: 6px;
     }
 
     .shop-mobile-filters select,
-    .shop-mobile-filters input,
-    .shop-mobile-filters button{
-        font-size: 11px;
+    .shop-mobile-filters input{
+        font-size: 10px;
+        min-height: 31px;
+        padding: 7px 7px;
+    }
+
+    .shop-mobile-grid{
+        gap: 8px;
+    }
+
+    .shop-mobile-image{
+        height: 122px;
+        padding: 8px;
+    }
+
+    .shop-mobile-content{
+        padding: 8px 8px 9px;
+    }
+
+    .shop-mobile-name{
+        font-size: 10.5px;
+    }
+
+    .shop-mobile-current{
+        font-size: 13px;
+    }
+
+    .shop-mobile-old,
+    .shop-mobile-off-text,
+    .shop-mobile-stock{
+        font-size: 9px;
+    }
+
+    .shop-mobile-btn,
+    .shop-mobile-detail{
         min-height: 32px;
-        padding: 7px 9px;
+        font-size: 10px;
         border-radius: 9px;
+        padding: 0 4px;
     }
 }
 
@@ -453,7 +434,7 @@
 
     .filters{
         display: grid;
-        grid-template-columns: 1.15fr 1fr 1fr 0.75fr 0.75fr auto;
+        grid-template-columns: 1fr 1fr 0.8fr 0.8fr;
         gap: 12px;
         align-items: center;
         background: rgba(255,255,255,0.96);
@@ -485,25 +466,6 @@
     .filters input:focus{
         border-color: #7c3aed;
         box-shadow: 0 0 0 4px rgba(124,58,237,0.08);
-    }
-
-    .filters button{
-        background: linear-gradient(135deg, #7c3aed, #9333ea);
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 700;
-        box-shadow: 0 8px 18px rgba(124,58,237,0.18);
-        transition: 0.25s ease;
-        min-height: 46px;
-        white-space: nowrap;
-    }
-
-    .filters button:hover{
-        transform: translateY(-2px);
-        background: linear-gradient(135deg, #6d28d9, #7c3aed);
     }
 
     .product-grid{
@@ -785,7 +747,7 @@
 
 @media (min-width: 769px) and (max-width: 1180px){
     .filters{
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .product-grid{
@@ -816,41 +778,25 @@
     <!-- MOBILE VIEW -->
     <div class="shop-mobile-wrap">
         <div class="shop-mobile-filters-wrap">
-            <form method="GET" class="shop-mobile-filters">
-                <div class="shop-mobile-field select-sm">
-                    <select name="category">
-                        <option value="">Category</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
-                            {{ cat.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <form method="GET" class="shop-mobile-filters" id="mobileFilterForm">
+                <select name="category" onchange="submitFilterForm('mobileFilterForm')">
+                    <option value="">Category</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
 
-                <div class="shop-mobile-field search">
-                    <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-                </div>
+                <select name="sort" onchange="submitFilterForm('mobileFilterForm')">
+                    <option value="">Sort</option>
+                    <option value="low" {% if request.GET.sort == "low" %}selected{% endif %}>Low → High</option>
+                    <option value="high" {% if request.GET.sort == "high" %}selected{% endif %}>High → Low</option>
+                </select>
 
-                <div class="shop-mobile-field select-sm">
-                    <select name="sort">
-                        <option value="">Sort</option>
-                        <option value="low" {% if request.GET.sort == "low" %}selected{% endif %}>Low → High</option>
-                        <option value="high" {% if request.GET.sort == "high" %}selected{% endif %}>High → Low</option>
-                    </select>
-                </div>
+                <input type="number" name="min" placeholder="Min ₹" value="{{ request.GET.min }}" onchange="submitFilterForm('mobileFilterForm')">
 
-                <div class="shop-mobile-field number-sm">
-                    <input type="number" name="min" placeholder="Min ₹" value="{{ request.GET.min }}">
-                </div>
-
-                <div class="shop-mobile-field number-sm">
-                    <input type="number" name="max" placeholder="Max ₹" value="{{ request.GET.max }}">
-                </div>
-
-                <div class="shop-mobile-field button-sm">
-                    <button type="submit">Apply</button>
-                </div>
+                <input type="number" name="max" placeholder="Max ₹" value="{{ request.GET.max }}" onchange="submitFilterForm('mobileFilterForm')">
             </form>
         </div>
 
@@ -940,8 +886,8 @@
             </div>
         </div>
 
-        <form method="GET" class="filters">
-            <select name="category">
+        <form method="GET" class="filters" id="desktopFilterForm">
+            <select name="category" onchange="submitFilterForm('desktopFilterForm')">
                 <option value="">All Categories</option>
                 {% for cat in categories %}
                 <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
@@ -950,18 +896,14 @@
                 {% endfor %}
             </select>
 
-            <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}">
-
-            <select name="sort">
+            <select name="sort" onchange="submitFilterForm('desktopFilterForm')">
                 <option value="">Sort</option>
                 <option value="low" {% if request.GET.sort == "low" %}selected{% endif %}>Price Low → High</option>
                 <option value="high" {% if request.GET.sort == "high" %}selected{% endif %}>Price High → Low</option>
             </select>
 
-            <input type="number" name="min" placeholder="Min ₹" value="{{ request.GET.min }}">
-            <input type="number" name="max" placeholder="Max ₹" value="{{ request.GET.max }}">
-
-            <button type="submit">Apply</button>
+            <input type="number" name="min" placeholder="Min ₹" value="{{ request.GET.min }}" onchange="submitFilterForm('desktopFilterForm')">
+            <input type="number" name="max" placeholder="Max ₹" value="{{ request.GET.max }}" onchange="submitFilterForm('desktopFilterForm')">
         </form>
 
         {% if products %}
@@ -1059,6 +1001,13 @@
 </div>
 
 <script>
+function submitFilterForm(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.submit();
+    }
+}
+
 function showToast(text) {
     const toast = document.getElementById("toast");
     toast.innerText = text;
